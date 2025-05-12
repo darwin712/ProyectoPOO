@@ -10,6 +10,7 @@ public class Ventana{
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         ImageIcon logo = new ImageIcon(imagenR);
 
+        //HJDAHDWHWAHDWAHDQW
 
         //WHDHWDHWDWDHAHDHWAHDHA
         //Frame
