@@ -77,10 +77,17 @@ public class Ventana{
         DefaultTableModel tableModel = new DefaultTableModel(columnas, 0);
         JTable tabla = new JTable(tableModel);
 
+        // Definir la fila con datos que coinciden con las columnas
+        Object[] nuevaFila = {"001", "Producto A", "10 unidades", "$100", "imagenA.png"};
+
+        // Agregar la fila al modelo de la tabla
+        tableModel.addRow(nuevaFila);
+
+
         //Colores de la tabla
         tabla.setBackground(Color.decode("#e6ccb2"));
-        tabla.setForeground(Color.decode("#FFFFFF"));
-        tabla.setFont(new Font("Arial", Font.PLAIN, 14));
+        tabla.setForeground(Color.decode("#142e3a"));
+        tabla.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
         tabla.setRowHeight(30);
         tabla.getTableHeader().setReorderingAllowed(false);
         tabla.getTableHeader().setBackground(Color.decode("#b08968"));
