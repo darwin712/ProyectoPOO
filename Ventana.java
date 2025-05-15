@@ -86,18 +86,26 @@ public class Ventana{
         //Utilizar el image renderer en la columna de imagenes
         tabla.getColumn("Imagen").setCellRenderer(new ImageCellRenderer());
 
+        //Tamaño de la celda imagen
+        tabla.getColumn("Imagen").setPreferredWidth(100);
+        tabla.getColumn("Imagen").setMaxWidth(100);
+        tabla.getColumn("Imagen").setMinWidth(100);
+        //Tamaño de la celda ID
+        tabla.getColumn("ID").setPreferredWidth(80);
+        tabla.getColumn("ID").setMaxWidth(80);
+        tabla.getColumn("ID").setMinWidth(80);
+
         // Definir la fila con datos que coinciden con las columnas
         Object[] nuevaFila = {"001", "Producto A", "10 unidades", "$100", imagenA_resized};
 
         // Agregar la fila al modelo de la tabla
         tableModel.addRow(nuevaFila);
 
-
-        //Colores de la tabla
+        //Propiedades de la tabla
+        tabla.setRowHeight(100);
         tabla.setBackground(Color.decode("#e6ccb2"));
         tabla.setForeground(Color.decode("#142e3a"));
-        tabla.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-        tabla.setRowHeight(30);
+        tabla.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         tabla.getTableHeader().setReorderingAllowed(false);
         tabla.getTableHeader().setBackground(Color.decode("#b08968"));
         tabla.getTableHeader().setForeground(Color.decode("#FFFFFF"));
