@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.*;
 
@@ -10,6 +11,11 @@ public class Ventana{
         ImageIcon imagen = new ImageIcon("iggycafe.png");
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         ImageIcon logo = new ImageIcon(imagenR);
+
+        //Imagen de prueba
+        ImageIcon imagenA = new ImageIcon("imagenA.png");
+        Image imagenAR = imagenA.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        ImageIcon imagenA_resized = new ImageIcon(imagenAR);
         
         //Frame
         JFrame frame = new JFrame("Iggy Cafe");
@@ -77,8 +83,11 @@ public class Ventana{
         DefaultTableModel tableModel = new DefaultTableModel(columnas, 0);
         JTable tabla = new JTable(tableModel);
 
+        //Utilizar el image renderer en la columna de imagenes
+        tabla.getColumn("Imagen").setCellRenderer(new ImageCellRenderer());
+
         // Definir la fila con datos que coinciden con las columnas
-        Object[] nuevaFila = {"001", "Producto A", "10 unidades", "$100", "imagenA.png"};
+        Object[] nuevaFila = {"001", "Producto A", "10 unidades", "$100", imagenA_resized};
 
         // Agregar la fila al modelo de la tabla
         tableModel.addRow(nuevaFila);
