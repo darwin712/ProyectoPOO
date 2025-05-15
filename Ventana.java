@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
@@ -39,16 +40,30 @@ public class Ventana{
         //Barra de busqueda
         JTextField bbusqueda = new JTextField();
         bbusqueda.setPreferredSize(new Dimension(400, 30));
+        bbusqueda.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        bbusqueda.setBackground(Color.decode("#f8e8ce"));
+        bbusqueda.setForeground(Color.decode("#142e3a"));
+        bbusqueda.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
 
         //Boton para buscar
         JButton buscar = new JButton("Buscar");
+        buscar.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        buscar.setBackground(Color.decode("#3c2413"));
+        buscar.setForeground(Color.decode("#FFFFFF"));
         buscar.setPreferredSize(new Dimension(200, 30));
+        buscar.setBorder(new LineBorder(Color.decode("#000000"), 1));
         
-        //Panel para la barra de busqueda
+        //Panel para la barra de busqueda y su boton
+        JPanel pbusqueda = new JPanel();
+        pbusqueda.setBackground(Color.decode("#735238"));
+        pbusqueda.add(bbusqueda);
+        pbusqueda.add(buscar);
+
+        //Panel para guardar y centrar la barra de busqueda junto a su boton
         JPanel panelbusqueda = new JPanel();
         panelbusqueda.setBackground(Color.decode("#735238"));
-        panelbusqueda.add(bbusqueda);
-        panelbusqueda.add(buscar);
+        panelbusqueda.setLayout(new GridBagLayout()); 
+        panelbusqueda.add(pbusqueda); 
         panelN.add(panelbusqueda);
 
         //Panel Central
@@ -79,26 +94,39 @@ public class Ventana{
         //Panel Sur
         JPanel panelS = new JPanel();
         panelS.setBackground(Color.decode("#b08968"));
-        panelS.setLayout(new BoxLayout(panelS, BoxLayout.X_AXIS));
         frame.add(panelS, BorderLayout.SOUTH);
 
         //Botones
+        JButton mostrarBTN = new JButton("Mostrar todo");
+        mostrarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        mostrarBTN.setBackground(Color.decode("#f8e8ce"));
+        mostrarBTN.setForeground(Color.decode("#3c2413"));
+        mostrarBTN.setPreferredSize(new Dimension(150, 30));
+        mostrarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        panelS.add(mostrarBTN);
+
         JButton agregarBTN = new JButton("Agregar");
-        agregarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 17));
-        agregarBTN.setBackground(Color.decode("#f9f5f3"));
-        agregarBTN.setAlignmentY(Component.CENTER_ALIGNMENT);
+        agregarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        agregarBTN.setBackground(Color.decode("#f8e8ce"));
+        agregarBTN.setForeground(Color.decode("#3c2413"));
+        agregarBTN.setPreferredSize(new Dimension(150, 30));
+        agregarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelS.add(agregarBTN);
 
         JButton modificarBTN = new JButton("Modificar");
-        modificarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 17));
-        modificarBTN.setBackground(Color.decode("#f9f5f3"));
-        modificarBTN.setAlignmentY(Component.CENTER_ALIGNMENT);
+        modificarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        modificarBTN.setBackground(Color.decode("#f8e8ce"));
+        modificarBTN.setForeground(Color.decode("#3c2413"));
+        modificarBTN.setPreferredSize(new Dimension(150, 30));
+        modificarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelS.add(modificarBTN);
 
         JButton eliminarBTN = new JButton("Eliminar");
-        eliminarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 17));
-        eliminarBTN.setBackground(Color.decode("#f9f5f3"));
-        eliminarBTN.setAlignmentY(Component.CENTER_ALIGNMENT);
+        eliminarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        eliminarBTN.setBackground(Color.decode("#f8e8ce"));
+        eliminarBTN.setForeground(Color.decode("#3c2413"));
+        eliminarBTN.setPreferredSize(new Dimension(150, 30));
+        eliminarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelS.add(eliminarBTN);
 
         //Usar estilo del sistema operativo
