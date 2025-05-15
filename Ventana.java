@@ -36,6 +36,21 @@ public class Ventana{
         inicio.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelN.add(inicio);
 
+        //Barra de busqueda
+        JTextField bbusqueda = new JTextField();
+        bbusqueda.setPreferredSize(new Dimension(400, 30));
+
+        //Boton para buscar
+        JButton buscar = new JButton("Buscar");
+        buscar.setPreferredSize(new Dimension(200, 30));
+        
+        //Panel para la barra de busqueda
+        JPanel panelbusqueda = new JPanel();
+        panelbusqueda.setBackground(Color.decode("#735238"));
+        panelbusqueda.add(bbusqueda);
+        panelbusqueda.add(buscar);
+        panelN.add(panelbusqueda);
+
         //Panel Central
         JPanel panelC = new JPanel();
         panelC.setBackground(Color.decode("#735238"));
