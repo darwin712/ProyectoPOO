@@ -7,8 +7,8 @@ public class Bebidas extends Productos {
     private String medida = "litros";
 
     // Constructor
-    public Bebidas(String id, String descripcion, ImageIcon imagen, int cantidad, String litros) {
-        super(id, descripcion, imagen, cantidad); 
+    public Bebidas(String id, String nombre, String descripcion, ImageIcon imagen, String cantidad, String litros) {
+        super(id, nombre, descripcion, imagen, cantidad); 
         this.litros = litros; 
     }
 

@@ -7,8 +7,8 @@ public class Alimentos extends Productos {
     private String numero = "piezas";
 
     // Constructor
-    public Alimentos(String id, String descripcion, ImageIcon imagen, int cantidad, String piezas) {
-        super(id, descripcion, imagen, cantidad); 
+    public Alimentos(String id, String nombre, String descripcion, ImageIcon imagen, String cantidad, String piezas) {
+        super(id, nombre, descripcion, imagen, cantidad); 
         this.piezas = piezas; 
     }
 

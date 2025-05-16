@@ -6,12 +6,13 @@ import javax.swing.ImageIcon;
 public class Productos implements Serializable{
 
     private String id;
+    private String nombre;
     private String descripcion;
     private ImageIcon imagen; // Atributo para la imagen
-    private int cantidad; 
+    private String cantidad; 
 
     // Constructor
-    public Productos(String id, String descripcion, ImageIcon imagen, int cantidad) {
+    public Productos(String id, String nombre, String descripcion, ImageIcon imagen, String cantidad) {
         this.id = id;
         this.descripcion = descripcion;
         this.imagen = imagen;
@@ -26,6 +27,14 @@ public class Productos implements Serializable{
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getDescripcion() {
@@ -44,11 +53,11 @@ public class Productos implements Serializable{
         this.imagen = imagen;
     }
 
-    public int getCantidad() {
+    public String getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(String cantidad) {
         this.cantidad = cantidad;
     }
 }
