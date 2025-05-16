@@ -1,9 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Ventana{
     public static void main(String[] args) {
@@ -11,11 +12,6 @@ public class Ventana{
         ImageIcon imagen = new ImageIcon("iggycafe.png");
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         ImageIcon logo = new ImageIcon(imagenR);
-
-        //Imagen de prueba
-        ImageIcon imagenA = new ImageIcon("imagenA.png");
-        Image imagenAR = imagenA.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        ImageIcon imagenA_resized = new ImageIcon(imagenAR);
         
         //Frame
         JFrame frame = new JFrame("Iggy Cafe");
@@ -79,7 +75,7 @@ public class Ventana{
         frame.add(panelC, BorderLayout.CENTER);
 
         //Tabla
-        String[] columnas = {"ID", "Descripcion", "Medida", "Precio", "Imagen"};
+        String[] columnas = {"ID", "Nombre", "Descripcion", "Precio", "Medida", "Existencias", "Imagen"};
         DefaultTableModel tableModel = new DefaultTableModel(columnas, 0);
         JTable tabla = new JTable(tableModel);
 
@@ -94,12 +90,6 @@ public class Ventana{
         tabla.getColumn("ID").setPreferredWidth(80);
         tabla.getColumn("ID").setMaxWidth(80);
         tabla.getColumn("ID").setMinWidth(80);
-
-        // Definir la fila con datos que coinciden con las columnas
-        Object[] nuevaFila = {"001", "Producto A", "10 unidades", "$100", imagenA_resized};
-
-        // Agregar la fila al modelo de la tabla
-        tableModel.addRow(nuevaFila);
 
         //Propiedades de la tabla
         tabla.setRowHeight(100);
@@ -161,6 +151,14 @@ public class Ventana{
         }
 
         frame.setVisible(true);
+
+        agregarBTN.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                FormularioProducto formulario = new FormularioProducto(frame);
+                formulario.setVisible(true);
+            }
+        });
+
 
     }
 }
