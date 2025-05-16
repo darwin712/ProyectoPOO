@@ -2,14 +2,20 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Extras.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Ventana{
     public static void main(String[] args) {
+        //Musica de fondo
+        Musica player = new Musica();
+        player.playMusic("Extras/iggycafetheme.wav");
+
         //Logo Iggy
-        ImageIcon imagen = new ImageIcon("iggycafe.png");
+        ImageIcon imagen = new ImageIcon("Extras/iggycafe.png");
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         ImageIcon logo = new ImageIcon(imagenR);
         

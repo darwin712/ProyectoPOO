@@ -2,11 +2,13 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Extras.*;
+
 import java.awt.*;
 
 public class Cajero extends JFrame{
     //Logo Iggy
-    ImageIcon imagen = new ImageIcon("iggycafe.png");
+    ImageIcon imagen = new ImageIcon("Extras/iggycafe.png");
     Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
     ImageIcon logo = new ImageIcon(imagenR);
 
