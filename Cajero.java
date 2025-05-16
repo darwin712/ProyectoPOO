@@ -1,10 +1,8 @@
+import Extras.ImageCellRenderer;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
-import Extras.*;
-
-import java.awt.*;
 
 public class Cajero extends JFrame{
     //Logo Iggy
