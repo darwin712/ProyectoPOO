@@ -15,7 +15,7 @@ public class Ventana{
         
         //Frame
         JFrame frame = new JFrame("Iggy Cafe");
-        frame.setBackground(Color.decode("#735238"));
+        frame.getContentPane().setBackground(Color.decode("#735238"));
         frame.setSize(950, 560);
         frame.setIconImage(logo.getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -143,6 +143,14 @@ public class Ventana{
         eliminarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelS.add(eliminarBTN);
 
+        JButton cajeroBTN = new JButton("Personal de cajas");
+        cajeroBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        cajeroBTN.setBackground(Color.decode("#f8e8ce"));
+        cajeroBTN.setForeground(Color.decode("#3c2413"));
+        cajeroBTN.setPreferredSize(new Dimension(180, 30));
+        cajeroBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        panelS.add(cajeroBTN);
+
         //Usar estilo del sistema operativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -156,6 +164,12 @@ public class Ventana{
             public void actionPerformed(ActionEvent e){
                 FormularioProducto formulario = new FormularioProducto(frame);
                 formulario.setVisible(true);
+            }
+        });
+
+        cajeroBTN.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                new Cajero();
             }
         });
 
