@@ -158,7 +158,7 @@ public class Ventana{
                 formulario.setVisible(true);
             }
         });
-     mostrarBTN.addActionListener(new ActionListener() {
+    mostrarBTN.addActionListener(new ActionListener() {
     public void actionPerformed(ActionEvent e){
         ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
         tableModel.setRowCount(0); // Limpiar tabla
@@ -225,11 +225,38 @@ public class Ventana{
                 }
 
                 if(tableModel.getRowCount() == 0){
-                    JOptionPane.showMessageDialog(frame, "No se encontraron resultadaos", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "No se encontraron resultados", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                 }
 
             }
         });
+
+        eliminarBTN.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String nombreEliminar = JOptionPane.showInputDialog(
+                    null,
+                    "Ingresa el nombre del producto a eliminar:",
+                    "Eliminar producto",
+                    JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (nombreEliminar == null) {
+                    return;
+                }
+
+                if (nombreEliminar.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "No se ingresó ningun nombre.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                } else {
+                    new Catalogo().eliminarProductos(nombreEliminar);
+                }
+            }
+        });
+
 
     }
 }
