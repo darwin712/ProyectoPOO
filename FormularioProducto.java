@@ -1,9 +1,9 @@
-import javax.swing.*;
 import java.awt.*;
-import java.io.File;
+import java.io.*;
+import javax.swing.*;
 
 public class FormularioProducto extends JDialog {
-    private JTextField idField, nombreField, descripcionField, precioField, medidaField, existenciasField;
+    private JTextField idField, nombreField, descripcionField, precioField, medidasField, existenciasField;
     private boolean confirmado = false;
 
     private JRadioButton bebidaButton, alimentoButton;
@@ -16,18 +16,16 @@ public class FormularioProducto extends JDialog {
 
     public FormularioProducto(JFrame parent) {
         super(parent, "Agregar Producto", true);
-        setLayout(new GridLayout(9, 2)); // Aumentamos la cuadrícula
+        setLayout(new GridLayout(10, 2));
         setSize(350, 400);
 
-        // Campos de texto
         idField = new JTextField();
         nombreField = new JTextField();
         descripcionField = new JTextField();
         precioField = new JTextField();
-        medidaField = new JTextField();
+        medidasField = new JTextField();
         existenciasField = new JTextField();
 
-        // Imagen
         seleccionarImagenButton = new JButton("Seleccionar imagen");
         imagenPreview = new JLabel("Sin imagen", SwingConstants.CENTER);
         imagenPreview.setPreferredSize(new Dimension(50, 50));
@@ -42,11 +40,10 @@ public class FormularioProducto extends JDialog {
                 ImageIcon icono = new ImageIcon(rutaImagenSeleccionada);
                 Image imagenEscalada = icono.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                 imagenPreview.setIcon(new ImageIcon(imagenEscalada));
-                imagenPreview.setText(""); // Quitamos texto
+                imagenPreview.setText("");
             }
         });
 
-        // Radio buttons para tipo de producto
         bebidaButton = new JRadioButton("Bebida");
         alimentoButton = new JRadioButton("Alimento");
 
@@ -54,12 +51,11 @@ public class FormularioProducto extends JDialog {
         tipoGroup.add(bebidaButton);
         tipoGroup.add(alimentoButton);
 
-        // Agregar campos al formulario
         add(new JLabel("ID:")); add(idField);
         add(new JLabel("Nombre:")); add(nombreField);
         add(new JLabel("Descripción:")); add(descripcionField);
         add(new JLabel("Precio:")); add(precioField);
-        add(new JLabel("Medida:")); add(medidaField);
+        add(new JLabel("Medida:")); add(medidasField);
         add(new JLabel("Existencias:")); add(existenciasField);
 
         add(seleccionarImagenButton); add(imagenPreview);
@@ -70,40 +66,75 @@ public class FormularioProducto extends JDialog {
         tipoPanel.add(alimentoButton);
         add(tipoPanel);
 
-        // Botón de aceptar
         JButton aceptar = new JButton("Registrar");
         aceptar.addActionListener(e -> {
             confirmado = true;
-    
-            if(bebidaButton.isSelected()){
-                String medidaConUnidad = medidaField.getText() + " litros";
-                productoCreado = new Bebidas(
-                    idField.getText(), 
-                    nombreField.getText(), 
-                    descripcionField.getText(),
-                    (ImageIcon) imagenPreview.getIcon(),
-                    precioField.getText(),
-                    medidaConUnidad
-                );
-            } else if(alimentoButton.isSelected()){
-                String medidaConUnidad = medidaField.getText() + " pzs";
-                productoCreado = new Alimentos(
-                    idField.getText(), 
-                    nombreField.getText(), 
-                    descripcionField.getText(),
-                    (ImageIcon) imagenPreview.getIcon(),
-                    precioField.getText(),
-                    medidaConUnidad
-                );
+
+            String id = idField.getText();
+            String nombre = nombreField.getText();
+            String descripcion = descripcionField.getText();
+            String precio = precioField.getText();
+            String medidas = medidasField.getText();  // Reutilizamos este campo para ambos tipos
+            String existencias = existenciasField.getText();
+            String rutaImagen = rutaImagenSeleccionada;
+
+            if (bebidaButton.isSelected()) {
+                productoCreado = new Bebidas(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
+            } else if (alimentoButton.isSelected()) {
+                productoCreado = new Alimentos(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
             }
-    
-        setVisible(false);  // Cerramos el diálogo
+
+            // Guardar producto en archivo
+            try {
+                File archivo = new File("productos.dat");
+                boolean append = archivo.exists() && archivo.length() > 0;
+
+                FileOutputStream fos = new FileOutputStream(archivo, true);
+                ObjectOutputStream oos = append
+                        ? new AppendingObjectOutputStream(fos)
+                        : new ObjectOutputStream(fos);
+
+                oos.writeObject(productoCreado);
+                oos.close();
+                fos.close();
+
+                JOptionPane.showMessageDialog(this, "Producto guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Archivo guardado en: " + archivo.getAbsolutePath());
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al guardar el producto", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            setVisible(false);
         });
-        add(aceptar); add(new JLabel()); // Rellenamos la última celda
+
+        add(aceptar); add(new JLabel());
 
         setLocationRelativeTo(parent);
         pack();
-
     }
 
+    public Productos getProductoCreado() {
+        return productoCreado;
+    }
+
+    public boolean isConfirmado() {
+        return confirmado;
+    }
+
+    // Clase para evitar escribir encabezado de nuevo al hacer append
+    private static class AppendingObjectOutputStream extends ObjectOutputStream {
+        public AppendingObjectOutputStream(OutputStream out) throws IOException {
+            super(out);
+        }
+
+        @Override
+        protected void writeStreamHeader() throws IOException {
+            reset();
+        }
+    }
 }

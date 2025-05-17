@@ -1,27 +1,22 @@
+import Extras.ImageCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import Extras.*;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class Ventana{
     public static void main(String[] args) {
-        //Musica de fondo
-        Musica player = new Musica();
-        player.playMusic("Extras/iggycafetheme.wav");
-
         //Logo Iggy
-        ImageIcon imagen = new ImageIcon("Extras/iggycafe.png");
+        ImageIcon imagen = new ImageIcon("iggycafe.png");
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         ImageIcon logo = new ImageIcon(imagenR);
         
         //Frame
         JFrame frame = new JFrame("Iggy Cafe");
-        frame.getContentPane().setBackground(Color.decode("#735238"));
+        frame.setBackground(Color.decode("#735238"));
         frame.setSize(950, 560);
         frame.setIconImage(logo.getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -149,14 +144,6 @@ public class Ventana{
         eliminarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelS.add(eliminarBTN);
 
-        JButton cajeroBTN = new JButton("Personal de cajas");
-        cajeroBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        cajeroBTN.setBackground(Color.decode("#f8e8ce"));
-        cajeroBTN.setForeground(Color.decode("#3c2413"));
-        cajeroBTN.setPreferredSize(new Dimension(180, 30));
-        cajeroBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
-        panelS.add(cajeroBTN);
-
         //Usar estilo del sistema operativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -172,12 +159,36 @@ public class Ventana{
                 formulario.setVisible(true);
             }
         });
+     mostrarBTN.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e){
+        ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
+        tableModel.setRowCount(0); // Limpiar tabla
 
-        cajeroBTN.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                new Cajero();
+        for (Productos p : productos) {
+            // Cargar y escalar la imagen
+            ImageIcon icono = null;
+            String ruta = p.getRutaImagen();
+            if (ruta != null && !ruta.isEmpty()) {
+                ImageIcon tempIcon = new ImageIcon(ruta);
+                Image img = tempIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                icono = new ImageIcon(img);
             }
-        });
+
+            Object[] fila = {
+                p.getId(),
+                p.getNombre(),
+                p.getDescripcion(),
+                p.getCantidad(),
+                p.getMedidas(),
+                p.getExistencias(),
+                new ImageIcon(new ImageIcon(p.getRutaImagen()).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH))
+
+            };
+
+            tableModel.addRow(fila);
+        }
+    }
+});
 
 
     }

@@ -1,32 +1,9 @@
-import javax.swing.ImageIcon;
 
-////CLASE HIJA PARA ALIMENTOS, SE MIDEN EN CANTIDAD DE PIEZAS
-public class Alimentos extends Productos {
+public class Alimentos extends Productos  {
 
-    private String piezas;
-    private String numero = "piezas";
 
-    // Constructor
-    public Alimentos(String id, String nombre, String descripcion, ImageIcon imagen, String cantidad, String piezas) {
-        super(id, nombre, descripcion, imagen, cantidad); 
-        this.piezas = piezas; 
-    }
-
-    // Getters y setters
-
-    public String getPiezas() {
-        return piezas;
-    }
-
-    public void setPiezas(String piezas) {
-        this.piezas = piezas;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public Alimentos(String id, String nombre,String medidas,String descripcion, String rutaImagen, String cantidad, String existencias) {
+        super(id, nombre, descripcion, rutaImagen,medidas, cantidad, existencias);
+       
     }
 }
