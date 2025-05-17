@@ -128,6 +128,133 @@ public class FormularioProducto extends JDialog {
         pack();
     }
 
+    public FormularioProducto(JFrame parent, String id, String nombre, String descripcion, String precio, String medidas, String existencias, String rutaImagen){
+        super(parent, "Agregar Producto", true);
+        setLayout(new GridLayout(10, 2));
+        setSize(350, 400);
+
+        idField = new JTextField();
+        nombreField = new JTextField();
+        descripcionField = new JTextField();
+        precioField = new JTextField();
+        medidasField = new JTextField();
+        existenciasField = new JTextField();
+
+        seleccionarImagenButton = new JButton("Seleccionar imagen");
+        imagenPreview = new JLabel("Sin imagen", SwingConstants.CENTER);
+        imagenPreview.setPreferredSize(new Dimension(50, 50));
+
+        seleccionarImagenButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File imagen = fileChooser.getSelectedFile();
+                rutaImagenSeleccionada = imagen.getAbsolutePath();
+
+                ImageIcon icono = new ImageIcon(rutaImagenSeleccionada);
+                Image imagenEscalada = icono.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                imagenPreview.setIcon(new ImageIcon(imagenEscalada));
+                imagenPreview.setText("");
+            }
+        });
+
+        bebidaButton = new JRadioButton("Bebida");
+        alimentoButton = new JRadioButton("Alimento");
+
+        tipoGroup = new ButtonGroup();
+        tipoGroup.add(bebidaButton);
+        tipoGroup.add(alimentoButton);
+
+        add(new JLabel("ID:")); add(idField);
+        add(new JLabel("Nombre:")); add(nombreField);
+        add(new JLabel("Descripción:")); add(descripcionField);
+        add(new JLabel("Precio:")); add(precioField);
+        add(new JLabel("Medida:")); add(medidasField);
+        add(new JLabel("Existencias:")); add(existenciasField);
+
+        add(seleccionarImagenButton); add(imagenPreview);
+
+        add(new JLabel("Tipo:"));
+        JPanel tipoPanel = new JPanel(new FlowLayout());
+        tipoPanel.add(bebidaButton);
+        tipoPanel.add(alimentoButton);
+        add(tipoPanel);
+
+        idField.setText(id);
+        nombreField.setText(nombre);
+        descripcionField.setText(descripcion);
+        precioField.setText(precio);
+        medidasField.setText(medidas);
+        existenciasField.setText(existencias);
+        if(rutaImagen == null){
+            rutaImagenSeleccionada = "";
+        }else{
+            rutaImagenSeleccionada = rutaImagen;
+        }
+
+        JButton aceptar = new JButton("Registrar");
+        aceptar.addActionListener(e -> {
+            confirmado = true;
+
+            String idM = idField.getText();
+            String nombreM = nombreField.getText();
+            String descripcionM = descripcionField.getText();
+            String precioM = precioField.getText();
+            String medidasM = medidasField.getText();  // Reutilizamos este campo para ambos tipos
+            String existenciasM = existenciasField.getText();
+            String rutaImagenM = rutaImagenSeleccionada;
+
+            if (bebidaButton.isSelected()) {
+                productoCreado = new Bebidas(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
+                System.out.println("Bebida creada: " + productoCreado);
+            } else if (alimentoButton.isSelected()) {
+                productoCreado = new Alimentos(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (bebidaButton.isSelected()) {
+                productoCreado = new Bebidas(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
+            } else if (alimentoButton.isSelected()) {
+                productoCreado = new Alimentos(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Guardar producto en archivo
+            try {
+                File archivo = new File("productos.dat");
+                boolean append = archivo.exists() && archivo.length() > 0;
+
+                FileOutputStream fos = new FileOutputStream(archivo, true);
+                ObjectOutputStream oos = append
+                        ? new AppendingObjectOutputStream(fos)
+                        : new ObjectOutputStream(fos);
+
+                oos.writeObject(productoCreado);
+                oos.close();
+                fos.close();
+
+                JOptionPane.showMessageDialog(this, "Producto guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Archivo guardado en: " + archivo.getAbsolutePath());
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al guardar el producto", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            setVisible(false);
+        });
+
+        add(aceptar); add(new JLabel());
+
+        setLocationRelativeTo(parent);
+        pack();
+
+    }
+
     public Productos getProductoCreado() {
         return productoCreado;
     }

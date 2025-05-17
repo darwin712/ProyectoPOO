@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -8,6 +11,10 @@ import javax.swing.table.DefaultTableModel;
 
 public class Ventana{
     public static void main(String[] args) {
+        //Musica  NOTA: Si la quieres quitar, solo convierte el codigo a comentarios usando "//"
+        Musica musicPlayer = new Musica();
+        musicPlayer.playMusic("iggycafetheme.wav");
+
         //Logo Iggy
         ImageIcon imagen = new ImageIcon("iggycafe.png");
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
@@ -143,6 +150,14 @@ public class Ventana{
         eliminarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelS.add(eliminarBTN);
 
+        JButton cajeroBTN = new JButton("Ventas");
+        cajeroBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        cajeroBTN.setBackground(Color.decode("#f8e8ce"));
+        cajeroBTN.setForeground(Color.decode("#3c2413"));
+        cajeroBTN.setPreferredSize(new Dimension(150, 30));
+        cajeroBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        panelS.add(cajeroBTN);
+
         //Usar estilo del sistema operativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -156,38 +171,40 @@ public class Ventana{
             public void actionPerformed(ActionEvent e){
                 FormularioProducto formulario = new FormularioProducto(frame);
                 formulario.setVisible(true);
+                mostrarBTN.doClick();
             }
         });
-    mostrarBTN.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e){
-        ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
-        tableModel.setRowCount(0); // Limpiar tabla
 
-        for (Productos p : productos) {
-            // Cargar y escalar la imagen
-            ImageIcon icono = null;
-            String ruta = p.getRutaImagen();
-            if (ruta != null && !ruta.isEmpty()) {
-                ImageIcon tempIcon = new ImageIcon(ruta);
-                Image img = tempIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-                icono = new ImageIcon(img);
+        mostrarBTN.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
+                tableModel.setRowCount(0); // Limpiar tabla
+
+                for (Productos p : productos) {
+                    // Cargar y escalar la imagen
+                    ImageIcon icono = null;
+                    String ruta = p.getRutaImagen();
+
+                    if (ruta != null && !ruta.isEmpty()) {
+                        ImageIcon tempIcon = new ImageIcon(ruta);
+                        Image img = tempIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                        icono = new ImageIcon(img);
+                    }
+
+                    Object[] fila = {
+                        p.getId(),
+                        p.getNombre(),
+                        p.getDescripcion(),
+                        p.getCantidad(),
+                        p.getMedidas(),
+                        p.getExistencias(),
+                        new ImageIcon(new ImageIcon(p.getRutaImagen()).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH))
+                    };
+
+                    tableModel.addRow(fila);
+                }
             }
-
-            Object[] fila = {
-                p.getId(),
-                p.getNombre(),
-                p.getDescripcion(),
-                p.getCantidad(),
-                p.getMedidas(),
-                p.getExistencias(),
-                new ImageIcon(new ImageIcon(p.getRutaImagen()).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH))
-
-            };
-
-            tableModel.addRow(fila);
-        }
-    }
-});
+        });
 
 
         buscar.addActionListener(new ActionListener() {
@@ -254,9 +271,88 @@ public class Ventana{
                 } else {
                     new Catalogo().eliminarProductos(nombreEliminar);
                 }
+
+                mostrarBTN.doClick();
             }
         });
 
+        modificarBTN.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String nombreModificar = JOptionPane.showInputDialog(
+                    null,
+                    "Ingresa el nombre del producto a modificar:",
+                    "Eliminar producto",
+                    JOptionPane.QUESTION_MESSAGE
+                );
 
+                if (nombreModificar == null) {
+                    return;
+                }
+
+                if (nombreModificar.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "No se ingresó ningun nombre.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                }
+
+                ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
+                Productos productoEncontrado = null;
+
+                for (Productos p : productos) {
+                    if (p.getNombre().equalsIgnoreCase(nombreModificar)) {
+                        productoEncontrado = p;
+                        break;
+                    }
+                }
+
+                if (productoEncontrado == null) {
+                    JOptionPane.showMessageDialog(frame, 
+                    "No se encontró un producto con el nombre: " + nombreModificar, 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                FormularioProducto formulario = new FormularioProducto(frame, 
+                productoEncontrado.getId(),
+                productoEncontrado.getNombre(),
+                productoEncontrado.getDescripcion(),
+                productoEncontrado.getCantidad(),
+                productoEncontrado.getMedidas(),
+                productoEncontrado.getExistencias(),
+                productoEncontrado.getRutaImagen());
+                formulario.setVisible(true);
+
+                if (formulario.isConfirmado()) {
+                    Productos productoModificado = formulario.getProductoCreado();
+
+                    for (int i = 0; i < productos.size(); i++) {
+                        if (productos.get(i).getId().equals(productoModificado.getId())) {
+                            productos.set(i, productoModificado);
+                            break;
+                        }
+                    }
+                
+                    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("productos.dat"))) {
+                        for (Productos producto : productos) {
+                            oos.writeObject(producto);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    mostrarBTN.doClick();
+                }
+            }
+        });
+
+        cajeroBTN.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                new Cajero();
+            }
+        });
     }
 }
