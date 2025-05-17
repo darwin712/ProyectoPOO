@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Cajero extends JFrame{
     //Logo Iggy
-    ImageIcon imagen = new ImageIcon("Extras/iggycafe.png");
+    ImageIcon imagen = new ImageIcon("iggycafe.png");
     Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
     ImageIcon logo = new ImageIcon(imagenR);
 
