@@ -87,6 +87,15 @@ public class FormularioProducto extends JDialog {
                 return;
             }
 
+            if (alimentoButton.isSelected()) {
+                productoCreado = new Bebidas(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
+            } else if (alimentoButton.isSelected()) {
+                productoCreado = new Alimentos(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Guardar producto en archivo
             try {
                 File archivo = new File("productos.dat");
