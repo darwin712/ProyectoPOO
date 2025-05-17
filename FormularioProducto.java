@@ -88,7 +88,7 @@ public class FormularioProducto extends JDialog {
                 return;
             }
 
-            if (alimentoButton.isSelected()) {
+            if (bebidaButton.isSelected()) {
                 productoCreado = new Bebidas(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
             } else if (alimentoButton.isSelected()) {
                 productoCreado = new Alimentos(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
