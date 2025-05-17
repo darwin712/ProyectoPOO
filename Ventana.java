@@ -190,5 +190,46 @@ public class Ventana{
 });
 
 
+        buscar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                String busquedaTexto = bbusqueda.getText().trim().toLowerCase();
+
+                tableModel.setRowCount(0); // Limpiar tabla
+                ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
+
+                for(Productos p : productos){
+                    String nombre = p.getNombre().toLowerCase();
+
+                    if(nombre.contains(busquedaTexto)){
+                        // Cargar y escalar la imagen
+                        ImageIcon icono = null;
+                        String ruta = p.getRutaImagen();
+                        if (ruta != null && !ruta.isEmpty()) {
+                            ImageIcon tempIcon = new ImageIcon(ruta);
+                            Image img = tempIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                            icono = new ImageIcon(img);
+                        }
+
+                        Object[] fila = {
+                            p.getId(),
+                            p.getNombre(),
+                            p.getDescripcion(),
+                            p.getCantidad(),
+                            p.getMedidas(),
+                            p.getExistencias(),
+                            new ImageIcon(new ImageIcon(p.getRutaImagen()).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH))
+                        };
+
+                        tableModel.addRow(fila);
+                    }
+                }
+
+                if(tableModel.getRowCount() == 0){
+                    JOptionPane.showMessageDialog(frame, "No se encontraron resultadaos", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            }
+        });
+
     }
 }
