@@ -83,7 +83,18 @@ public class FormularioProducto extends JDialog {
                 System.out.println("Bebida creada: " + productoCreado);
             } else if (alimentoButton.isSelected()) {
                 productoCreado = new Alimentos(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
-                System.out.println("Alimento creado: " + productoCreado);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (alimentoButton.isSelected()) {
+                productoCreado = new Bebidas(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
+            } else if (alimentoButton.isSelected()) {
+                productoCreado = new Alimentos(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
             }
 
             // Guardar producto en archivo
