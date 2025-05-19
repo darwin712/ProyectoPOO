@@ -316,8 +316,14 @@ public class Ventana{
                     return;
                 }
 
-                FormularioProducto formulario = new FormularioProducto(frame, productoEncontrado.getId(),productoEncontrado.getNombre(),productoEncontrado.getDescripcion(),productoEncontrado.getCantidad(), productoEncontrado.getMedidas(),productoEncontrado.getExistencias(),
-productoEncontrado.getRutaImagen());
+                FormularioProducto formulario = new FormularioProducto(frame, 
+                productoEncontrado.getId(),
+                productoEncontrado.getNombre(),
+                productoEncontrado.getDescripcion(),
+                productoEncontrado.getCantidad(),
+                productoEncontrado.getMedidas(),
+                productoEncontrado.getExistencias(),
+                productoEncontrado.getRutaImagen());
                 formulario.setVisible(true);
 
                 if (formulario.isConfirmado()) {

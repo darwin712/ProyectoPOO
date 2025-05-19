@@ -128,7 +128,7 @@ public class FormularioProducto extends JDialog {
         pack();
     }
 
-    public FormularioProducto(JFrame parent, String id, String nombre, String descripcion, String precio, Object medidas, String existencias, String rutaImagen){
+    public FormularioProducto(JFrame parent, String id, String nombre, String descripcion, String precio, String medidas, String existencias, String rutaImagen){
         super(parent, "Agregar Producto", true);
         setLayout(new GridLayout(10, 2));
         setSize(350, 400);
@@ -184,7 +184,7 @@ public class FormularioProducto extends JDialog {
         nombreField.setText(nombre);
         descripcionField.setText(descripcion);
         precioField.setText(precio);
-        medidasField.setText((String) medidas);
+        medidasField.setText(medidas);
         existenciasField.setText(existencias);
         if(rutaImagen == null){
             rutaImagenSeleccionada = "";

@@ -15,7 +15,7 @@ public class Productos implements Serializable {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.rutaImagen = rutaImagen;
-        this.medidas= medidas;
+        this.medidas=medidas;
         this.cantidad = cantidad;
         this.existencias = existencias;
     }
