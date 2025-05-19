@@ -4,34 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
-
-// Clase Venta
-class Venta implements Serializable {
-    private String idProducto;
-    private String nombreProducto;
-    private int cantidad;
-    private double precioUnitario;
-    private double total;
-    private Date fechaVenta;
-
-    public Venta(String idProducto, String nombreProducto, int cantidad, double precioUnitario, double total, Date fechaVenta) {
-        this.idProducto = idProducto;
-        this.nombreProducto = nombreProducto;
-        this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
-        this.total = total;
-        this.fechaVenta = fechaVenta;
-    }
-
-    public String getIdProducto() { return idProducto; }
-    public String getNombreProducto() { return nombreProducto; }
-    public int getCantidad() { return cantidad; }
-    public double getPrecioUnitario() { return precioUnitario; }
-    public double getTotal() { return total; }
-    public Date getFechaVenta() { return fechaVenta; }
-}
 
 public class Cajero extends JFrame {
     private JTextField txtCodigoProducto, txtCantidad;
@@ -44,11 +18,19 @@ public class Cajero extends JFrame {
     private java.util.List<Venta> ventasActuales;
     private double totalVenta;
 
+    //Logo Iggy
+    ImageIcon imagen = new ImageIcon("iggycafe.png");
+    Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+    ImageIcon logo = new ImageIcon(imagenR);
+
     public Cajero() {
         setTitle("Interfaz Cajero");
         setSize(700, 500);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setIconImage(logo.getImage());
+        setBackground(Color.decode("#735238"));
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setVisible(true);
 
         inventario = cargarInventario();
         ventasActuales = new ArrayList<>();
@@ -61,15 +43,27 @@ public class Cajero extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
 
         JPanel panelEntrada = new JPanel();
-        panelEntrada.add(new JLabel("Código Producto:"));
+        panelEntrada.setBackground(Color.decode("#735238"));
+        JLabel label1 = new JLabel("Código Producto:");
+        label1.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+        label1.setForeground(Color.decode("#FFFFFF"));
+        panelEntrada.add(label1);
         txtCodigoProducto = new JTextField(10);
         panelEntrada.add(txtCodigoProducto);
 
-        panelEntrada.add(new JLabel("Cantidad:"));
+        JLabel label2 = new JLabel("Cantidad:");
+        label2.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+        label2.setForeground(Color.decode("#FFFFFF"));
+        panelEntrada.add(label2);
         txtCantidad = new JTextField(5);
         panelEntrada.add(txtCantidad);
 
         btnAgregar = new JButton("Agregar");
+        btnAgregar.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+        btnAgregar.setBackground(Color.decode("#f8e8ce"));
+        btnAgregar.setForeground(Color.decode("#3c2413"));
+        btnAgregar.setPreferredSize(new Dimension(150, 30));
+        btnAgregar.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelEntrada.add(btnAgregar);
 
         panel.add(panelEntrada, BorderLayout.NORTH);
@@ -100,6 +94,8 @@ public class Cajero extends JFrame {
         btnAgregar.addActionListener(e -> agregarProductoVenta());
         btnRealizarVenta.addActionListener(e -> realizarVenta());
         btnCorteCaja.addActionListener(e -> generarCorteCaja());
+
+        
     }
 
     private java.util.List<Productos> cargarInventario() {
@@ -318,9 +314,5 @@ public class Cajero extends JFrame {
         }
 
         JOptionPane.showMessageDialog(this, "Corte de caja generado en corte_de_caja.txt");
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Cajero().setVisible(true));
     }
 }
