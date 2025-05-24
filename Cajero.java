@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class Cajero extends JFrame {
@@ -14,27 +13,23 @@ public class Cajero extends JFrame {
     private DefaultTableModel modeloTabla;
     private JLabel lblTotal;
 
-    private java.util.List<Productos> inventario;
-    private java.util.List<Venta> ventasActuales;
+    private List<Productos> inventario;
+    private List<ProductoVendido> productosVentaActual;
     private double totalVenta;
-
-    //Logo Iggy
-    ImageIcon imagen = new ImageIcon("iggycafe.png");
-    Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-    ImageIcon logo = new ImageIcon(imagenR);
+    private int ultimoIdVenta = 0;
 
     public Cajero() {
         setTitle("Interfaz Cajero");
         setSize(700, 500);
-        setIconImage(logo.getImage());
-        setBackground(Color.decode("#735238"));
+        setIconImage(new ImageIcon("iggycafe.png").getImage());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
 
         inventario = cargarInventario();
-        ventasActuales = new ArrayList<>();
+        productosVentaActual = new ArrayList<>();
         totalVenta = 0.0;
+        ultimoIdVenta = obtenerUltimoIdVenta();
 
         initComponents();
     }
@@ -44,35 +39,23 @@ public class Cajero extends JFrame {
 
         JPanel panelEntrada = new JPanel();
         panelEntrada.setBackground(Color.decode("#735238"));
-        JLabel label1 = new JLabel("Código Producto:");
-        label1.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-        label1.setForeground(Color.decode("#FFFFFF"));
-        panelEntrada.add(label1);
+
+        panelEntrada.add(new JLabel("Código Producto:"));
         txtCodigoProducto = new JTextField(10);
         panelEntrada.add(txtCodigoProducto);
 
-        JLabel label2 = new JLabel("Cantidad:");
-        label2.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-        label2.setForeground(Color.decode("#FFFFFF"));
-        panelEntrada.add(label2);
+        panelEntrada.add(new JLabel("Cantidad:"));
         txtCantidad = new JTextField(5);
         panelEntrada.add(txtCantidad);
 
         btnAgregar = new JButton("Agregar");
-        btnAgregar.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
-        btnAgregar.setBackground(Color.decode("#f8e8ce"));
-        btnAgregar.setForeground(Color.decode("#3c2413"));
-        btnAgregar.setPreferredSize(new Dimension(150, 30));
-        btnAgregar.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelEntrada.add(btnAgregar);
 
         panel.add(panelEntrada, BorderLayout.NORTH);
 
         String[] columnas = {"ID", "Nombre", "Cantidad", "Precio Unitario", "Total"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            public boolean isCellEditable(int row, int col) { return false; }
         };
         tablaVentas = new JTable(modeloTabla);
         panel.add(new JScrollPane(tablaVentas), BorderLayout.CENTER);
@@ -88,231 +71,206 @@ public class Cajero extends JFrame {
         panelInferior.add(btnCorteCaja);
 
         panel.add(panelInferior, BorderLayout.SOUTH);
-
         add(panel);
 
         btnAgregar.addActionListener(e -> agregarProductoVenta());
         btnRealizarVenta.addActionListener(e -> realizarVenta());
         btnCorteCaja.addActionListener(e -> generarCorteCaja());
-
-        
     }
 
-    private java.util.List<Productos> cargarInventario() {
-        java.util.List<Productos> lista = new ArrayList<>();
-        File archivo = new File("productos.dat");
-        if (!archivo.exists()) {
-            JOptionPane.showMessageDialog(this, "No se encontró el archivo productos.dat");
-            return lista;
-        }
-
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+    private List<Productos> cargarInventario() {
+        List<Productos> lista = new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("productos.dat"))) {
             Object obj;
-            while (true) {
-                try {
-                    obj = ois.readObject();
-                    if (obj instanceof Productos) {
-                        lista.add((Productos) obj);
-                    }
-                } catch (EOFException eof) {
-                    break;
-                }
+            while ((obj = ois.readObject()) != null) {
+                if (obj instanceof Productos) lista.add((Productos) obj);
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al cargar inventario: " + ex.getMessage());
+        } catch (EOFException ignored) {
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error cargando inventario: " + e.getMessage());
         }
-
         return lista;
     }
 
     private void guardarInventario() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("productos.dat"))) {
-            for (Productos p : inventario) {
-                oos.writeObject(p);
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al guardar inventario: " + ex.getMessage());
+            for (Productos p : inventario) oos.writeObject(p);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error guardando inventario: " + e.getMessage());
         }
     }
 
-    private Productos buscarProductoPorCodigo(String codigo) {
-        for (Productos p : inventario) {
-            if (p.getId().equalsIgnoreCase(codigo)) {
-                return p;
-            }
-        }
-        return null;
+    private Productos buscarProducto(String codigo) {
+        return inventario.stream()
+            .filter(p -> p.getId().equalsIgnoreCase(codigo))
+            .findFirst()
+            .orElse(null);
     }
 
     private void agregarProductoVenta() {
         String codigo = txtCodigoProducto.getText().trim();
-        if (codigo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingresa el código del producto.");
-            return;
-        }
-
         int cantidad;
         try {
             cantidad = Integer.parseInt(txtCantidad.getText().trim());
-            if (cantidad <= 0) {
-                JOptionPane.showMessageDialog(this, "La cantidad debe ser mayor a cero.");
-                return;
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Cantidad inválida, ingresa un número entero.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Cantidad inválida");
             return;
         }
 
-        Productos producto = buscarProductoPorCodigo(codigo);
-        if (producto == null) {
-            JOptionPane.showMessageDialog(this, "Producto no encontrado.");
+        Productos p = buscarProducto(codigo);
+        if (p == null) {
+            JOptionPane.showMessageDialog(this, "Producto no encontrado");
             return;
         }
 
-        int existencias;
-        try {
-            existencias = Integer.parseInt(producto.getExistencias());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Error en existencias del producto.");
+        int stock = Integer.parseInt(p.getExistencias());
+        if (cantidad > stock) {
+            JOptionPane.showMessageDialog(this, "Stock insuficiente: " + stock);
             return;
         }
 
-        if (cantidad > existencias) {
-            JOptionPane.showMessageDialog(this, "No hay suficientes existencias. Disponibles: " + existencias);
-            return;
-        }
+        double precio = Double.parseDouble(p.getCantidad());
+        ProductoVendido prod = new ProductoVendido(p.getId(), p.getNombre(), cantidad, precio);
+        productosVentaActual.add(prod);
 
-        double precioUnitario;
-        try {
-            precioUnitario = Double.parseDouble(producto.getCantidad());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Error en precio del producto.");
-            return;
-        }
-
-        double totalProducto = precioUnitario * cantidad;
-        Venta venta = new Venta(producto.getId(), producto.getNombre(), cantidad, precioUnitario, totalProducto, new Date());
-        ventasActuales.add(venta);
-
-        modeloTabla.addRow(new Object[] {
-            venta.getIdProducto(),
-            venta.getNombreProducto(),
-            venta.getCantidad(),
-            String.format("$%.2f", venta.getPrecioUnitario()),
-            String.format("$%.2f", venta.getTotal())
+        modeloTabla.addRow(new Object[]{
+            prod.getIdProducto(),
+            prod.getNombreProducto(),
+            prod.getCantidad(),
+            String.format("$%.2f", prod.getPrecioUnitario()),
+            String.format("$%.2f", prod.getTotal())
         });
 
-        totalVenta += totalProducto;
+        totalVenta += prod.getTotal();
         lblTotal.setText(String.format("Total: $%.2f", totalVenta));
-
         txtCodigoProducto.setText("");
         txtCantidad.setText("");
-        txtCodigoProducto.requestFocus();
     }
 
     private void realizarVenta() {
-        if (ventasActuales.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No hay productos agregados para vender.");
+        if (productosVentaActual.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay productos en la venta.");
             return;
         }
 
-        for (Venta v : ventasActuales) {
-            Productos p = buscarProductoPorCodigo(v.getIdProducto());
-            if (p != null) {
-                int existenciasActuales = Integer.parseInt(p.getExistencias());
-                int nuevasExistencias = existenciasActuales - v.getCantidad();
-                p.setExistencias(String.valueOf(nuevasExistencias));
-            }
+        for (ProductoVendido pv : productosVentaActual) {
+            Productos p = buscarProducto(pv.getIdProducto());
+            int nuevoStock = Integer.parseInt(p.getExistencias()) - pv.getCantidad();
+            p.setExistencias(String.valueOf(nuevoStock));
         }
 
         guardarInventario();
-        guardarVentas(ventasActuales);
+        ultimoIdVenta++;
+        Venta venta = new Venta(String.valueOf(ultimoIdVenta), new Date(), new ArrayList<>(productosVentaActual));
+        guardarVentas(Collections.singletonList(venta));
 
-        JOptionPane.showMessageDialog(this, "Venta realizada con éxito. Total a pagar: $" + String.format("%.2f", totalVenta));
+        JOptionPane.showMessageDialog(this, "Venta realizada con éxito. Total: $" + String.format("%.2f", totalVenta));
 
+        productosVentaActual.clear();
         modeloTabla.setRowCount(0);
-        ventasActuales.clear();
-        totalVenta = 0.0;
+        totalVenta = 0;
         lblTotal.setText("Total: $0.00");
     }
 
-    private void guardarVentas(List<Venta> nuevasVentas) {
+    private void guardarVentas(List<Venta> nuevas) {
         List<Venta> todas = new ArrayList<>();
-
         File archivo = new File("ventas.dat");
+
         if (archivo.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
                 while (true) {
                     try {
                         Object obj = ois.readObject();
-                        if (obj instanceof Venta) {
-                            todas.add((Venta) obj);
-                        }
-                    } catch (EOFException eof) {
+                        if (obj instanceof Venta) todas.add((Venta) obj);
+                    } catch (EOFException e) {
                         break;
                     }
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
-        todas.addAll(nuevasVentas);
+        todas.addAll(nuevas);
 
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
-            for (Venta v : todas) {
-                oos.writeObject(v);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("ventas.dat"))) {
+            for (Venta v : todas) oos.writeObject(v);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void generarCorteCaja() {
+    private int obtenerUltimoIdVenta() {
+        int maxId = 0;
         File archivo = new File("ventas.dat");
-        if (!archivo.exists()) {
-            JOptionPane.showMessageDialog(this, "No hay ventas registradas para corte de caja.");
-            return;
-        }
 
-        List<Venta> todas = new ArrayList<>();
+        if (!archivo.exists()) return 0;
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
             while (true) {
                 try {
                     Object obj = ois.readObject();
                     if (obj instanceof Venta) {
-                        todas.add((Venta) obj);
+                        Venta v = (Venta) obj;
+                        try {
+                            int id = Integer.parseInt(v.getIdVenta());
+                            if (id > maxId) maxId = id;
+                        } catch (NumberFormatException ignored) {}
                     }
-                } catch (EOFException eof) {
+                } catch (EOFException e) {
                     break;
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return maxId;
+    }
+
+    private void generarCorteCaja() {
+        File archivo = new File("ventas.dat");
+        if (!archivo.exists()) {
+            JOptionPane.showMessageDialog(this, "No hay ventas registradas.");
+            return;
+        }
+
+        List<Venta> todas = new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+            while (true) {
+                try {
+                    Object obj = ois.readObject();
+                    if (obj instanceof Venta) todas.add((Venta) obj);
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         double totalDia = 0.0;
         try (PrintWriter writer = new PrintWriter("corte_de_caja.txt")) {
             writer.println("CORTE DE CAJA");
             writer.println("Fecha: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
-            writer.println("----------------------------------------");
+            writer.println("===========================================");
+
             for (Venta v : todas) {
-                writer.printf("%s - %s - Cant: %d - $%.2f - $%.2f\n",
-                        v.getIdProducto(),
-                        v.getNombreProducto(),
-                        v.getCantidad(),
-                        v.getPrecioUnitario(),
-                        v.getTotal());
-                totalDia += v.getTotal();
+                writer.printf("Venta ID: %s | Fecha: %s\n", v.getIdVenta(), v.getFecha());
+                for (ProductoVendido p : v.getProductos()) {
+                    writer.printf("  %s - %s - x%d - $%.2f - $%.2f\n",
+                        p.getIdProducto(), p.getNombreProducto(),
+                        p.getCantidad(), p.getPrecioUnitario(), p.getTotal());
+                }
+                writer.printf("  TOTAL VENTA: $%.2f\n\n", v.getTotalVenta());
+                totalDia += v.getTotalVenta();
             }
-            writer.println("----------------------------------------");
+
+            writer.println("===========================================");
             writer.printf("TOTAL DEL DÍA: $%.2f\n", totalDia);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al generar corte de caja: " + e.getMessage());
-            return;
+            JOptionPane.showMessageDialog(this, "Error al generar el corte de caja.");
         }
 
-        JOptionPane.showMessageDialog(this, "Corte de caja generado en corte_de_caja.txt");
+        JOptionPane.showMessageDialog(this, "Corte de caja generado: corte_de_caja.txt");
     }
 }
