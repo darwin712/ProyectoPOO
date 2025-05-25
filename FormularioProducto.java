@@ -88,15 +88,6 @@ public class FormularioProducto extends JDialog {
                 return;
             }
 
-            if (bebidaButton.isSelected()) {
-                productoCreado = new Bebidas(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
-            } else if (alimentoButton.isSelected()) {
-                productoCreado = new Alimentos(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
-            } else {
-                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
             // Guardar producto en archivo
             try {
                 File archivo = new File("productos.dat");
@@ -129,7 +120,7 @@ public class FormularioProducto extends JDialog {
     }
 
     public FormularioProducto(JFrame parent, String id, String nombre, String descripcion, String precio, String medidas, String existencias, String rutaImagen){
-        super(parent, "Agregar Producto", true);
+        super(parent, "Modificar Producto", true);
         setLayout(new GridLayout(10, 2));
         setSize(350, 400);
 
@@ -192,7 +183,7 @@ public class FormularioProducto extends JDialog {
             rutaImagenSeleccionada = rutaImagen;
         }
 
-        JButton aceptar = new JButton("Registrar");
+        JButton aceptar = new JButton("Modificar");
         aceptar.addActionListener(e -> {
             confirmado = true;
 
@@ -206,20 +197,11 @@ public class FormularioProducto extends JDialog {
 
             if (bebidaButton.isSelected()) {
                 productoCreado = new Bebidas(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
-                System.out.println("Bebida creada: " + productoCreado);
+                System.out.println("Bebida modificada: " + productoCreado);
             } else if (alimentoButton.isSelected()) {
                 productoCreado = new Alimentos(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
             } else {
-                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            if (bebidaButton.isSelected()) {
-                productoCreado = new Bebidas(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
-            } else if (alimentoButton.isSelected()) {
-                productoCreado = new Alimentos(idM, nombreM, descripcionM, rutaImagenM, precioM, medidasM, existenciasM);
-            } else {
-                JOptionPane.showMessageDialog(this, "Selecciona un tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Confirma el tipo de producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -237,12 +219,12 @@ public class FormularioProducto extends JDialog {
                 oos.close();
                 fos.close();
 
-                JOptionPane.showMessageDialog(this, "Producto guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println("Archivo guardado en: " + archivo.getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Producto modificado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Archivo modificado en: " + archivo.getAbsolutePath());
 
             } catch (IOException ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al guardar el producto", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al modificar el producto", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
             setVisible(false);
