@@ -1,18 +1,12 @@
 ////ESTA CLASE CONTIENE LA LISTA DE PRODUCTOS Y SU ADMINISTRACION EN EL ARCHIVO
 
-import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class Catalogo {
@@ -52,36 +46,43 @@ public class Catalogo {
     return listaProductos;
     }
 
-    public void eliminarProductos(String bnombre) {
+    public void eliminarProductos(String bcodigo) {
         try {
+            // Leer productos del archivo
             ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
 
             // Crear lista nueva sin los productos que coincidan
             ArrayList<Productos> productosFiltrados = new ArrayList<>();
+            boolean productoEliminado = false;
 
             for (Productos p : productos) {
-                if (!p.getNombre().toLowerCase().contains(bnombre.toLowerCase())) {
+                if (!p.getId().equalsIgnoreCase(bcodigo)) {
                     productosFiltrados.add(p);
+                } else {
+                    productoEliminado = true;
                 }
             }
 
             // Reescribir el archivo objeto por objeto para mantener el formato
             try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("productos.dat"))) {
                 for (Productos p : productosFiltrados) {
-                    
                     salida.writeObject(p);
-                    
                 }
             }
 
-            // Mostrar mensaje de éxito al usuario
-            JOptionPane.showMessageDialog(null, "Producto(s) eliminado(s) correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al eliminar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+            // Mostrar mensajes
+            if (productoEliminado) {
+                JOptionPane.showMessageDialog(null, "Producto eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró un producto con el ID: "+bcodigo, "Error", JOptionPane.ERROR_MESSAGE);
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al eliminar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
+
 
 
 
