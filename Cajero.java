@@ -139,6 +139,37 @@ public class Cajero extends JFrame {
         btnCorteCaja.setFocusPainted(false);
         panelInferior.add(btnCorteCaja);
 
+        //Icono de archivo
+        ImageIcon imagenArchivo = new ImageIcon("recursos/file.png");
+        Image imagenArchivoR = imagenArchivo.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        ImageIcon iconoArchivo = new ImageIcon(imagenArchivoR);
+
+        //Boton para abrir archivo
+        JButton btnAbrirArchivo = new JButton("Abrir", iconoArchivo);
+        btnAbrirArchivo.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnAbrirArchivo.setBackground(Color.decode("#f8e8ce"));
+        btnAbrirArchivo.setForeground(Color.decode("#3c2413"));
+        btnAbrirArchivo.setPreferredSize(new Dimension(120, 30));
+        btnAbrirArchivo.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        btnAbrirArchivo.setFocusPainted(false);
+        panelInferior.add(btnAbrirArchivo);
+
+        //Listener abrir archivo
+        btnAbrirArchivo.addActionListener(e -> {
+            Musica.getInstance().playSFX("recursos/clicksfx.wav");
+            File archivo = new File("corte_de_caja.txt");
+            if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo 'corte_de_caja.txt' no existe.");
+                return;
+            }
+
+            try {
+                Desktop.getDesktop().open(archivo);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al abrir el archivo: " + ex.getMessage());
+            }
+        });
+
         panel.add(panelInferior, BorderLayout.SOUTH);
         add(panel);
 
