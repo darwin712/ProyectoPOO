@@ -2,17 +2,21 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
-public class Musica {
-    private static Musica instance;
-    private Clip audioClip;
-    private boolean isPlaying;
-    private boolean wasPlayedOnce;
+//Clase para poder reproducir musica y sonidos en la aplicacion
 
+public class Musica {
+    private static Musica instance; //Instancia unica
+    private boolean isPlaying; //La musica esta reproduciendose?
+    private boolean wasPlayedOnce; //Se reprodujo al menos 1 vez?
+    private Clip audioClip;
+
+    //Constructor para utilizar el Singleton
     private Musica() {
         isPlaying = false;
         wasPlayedOnce = false;
     }
 
+    //Metodo para obtener la instancia unica
     public static Musica getInstance() {
         if (instance == null) {
             instance = new Musica();
@@ -20,6 +24,7 @@ public class Musica {
         return instance;
     }
 
+    //Metodo para reproducir la musica principal de la aplicacion en bucle
     public void playMusic(String filePath) {
         try {
             File audioFile = new File(filePath);
@@ -34,6 +39,7 @@ public class Musica {
         }
     }
 
+    //Metodo para parar la musica
     public void stopMusic() {
         if (audioClip != null && audioClip.isRunning()) {
             audioClip.stop();
@@ -41,6 +47,7 @@ public class Musica {
         }
     }
 
+    //Metodo para reproducir efectos de sonido exclusivamente (sin bucle)
     public void playSFX(String filePath) {
         try {
             File audioFile = new File(filePath);
@@ -53,14 +60,17 @@ public class Musica {
         }
     }
 
+    //Metodo para verificar si la musica esta sonando
     public boolean isPlaying() {
         return isPlaying;
     }
 
+    //Metodo para verificar si la musica ha sonado aunque sea 1 vez
     public boolean wasPlayedOnce() {
         return wasPlayedOnce;
     }
 
+    //Metodo para establecer el estado de reproduccion
     public void setWasPlayedOnce(boolean wasPlayedOnce) {
         this.wasPlayedOnce = wasPlayedOnce;
     }

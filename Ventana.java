@@ -125,7 +125,7 @@ public class Ventana extends JFrame{
         panelS.setBackground(Color.decode("#b08968"));
         add(panelS, BorderLayout.SOUTH);
 
-        //Botones
+        //Boton de mostrar
         JButton mostrarBTN = new JButton("Mostrar todo");
         mostrarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         mostrarBTN.setBackground(Color.decode("#f8e8ce"));
@@ -135,6 +135,7 @@ public class Ventana extends JFrame{
         mostrarBTN.setFocusPainted(false);
         panelS.add(mostrarBTN);
 
+        //Boton de agregar
         JButton agregarBTN = new JButton("Agregar");
         agregarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         agregarBTN.setBackground(Color.decode("#f8e8ce"));
@@ -144,6 +145,7 @@ public class Ventana extends JFrame{
         agregarBTN.setFocusPainted(false);
         panelS.add(agregarBTN);
 
+        //Boton de modificar
         JButton modificarBTN = new JButton("Modificar");
         modificarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         modificarBTN.setBackground(Color.decode("#f8e8ce"));
@@ -153,6 +155,7 @@ public class Ventana extends JFrame{
         modificarBTN.setFocusPainted(false);
         panelS.add(modificarBTN);
 
+        //Boton de eliminar
         JButton eliminarBTN = new JButton("Eliminar");
         eliminarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         eliminarBTN.setBackground(Color.decode("#f8e8ce"));
@@ -162,18 +165,22 @@ public class Ventana extends JFrame{
         eliminarBTN.setFocusPainted(false);
         panelS.add(eliminarBTN);
 
+        ////////////LISTENERS///////////
+
+        //Listener para el boton de Agregar
         agregarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 FormularioProducto formulario = new FormularioProducto(Ventana.this);
-                Musica.getInstance().playSFX("recursos/clicksfx.wav");
                 formulario.setVisible(true);
                 mostrarBTN.doClick();
             }
         });
 
+        //Listener para el boton de Mostrar
         mostrarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Musica.getInstance().playSFX("recursos/clicksfx.wav");
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
                 tableModel.setRowCount(0); // Limpiar tabla
 
@@ -204,9 +211,10 @@ public class Ventana extends JFrame{
         });
 
 
+        //Listener para el boton de Busqueda
         buscar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Musica.getInstance().playSFX("recursos/clicksfx.wav");
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 String busquedaTexto = bbusqueda.getText().trim().toLowerCase();
 
                 tableModel.setRowCount(0); // Limpiar tabla
@@ -246,9 +254,10 @@ public class Ventana extends JFrame{
             }
         });
 
+        //Listener para el boton de Eliminar
         eliminarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Musica.getInstance().playSFX("recursos/clicksfx.wav");
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 String codigoEliminar = JOptionPane.showInputDialog(
                     null,
                     "Ingresa el ID del producto a eliminar:",
@@ -275,9 +284,10 @@ public class Ventana extends JFrame{
             }
         });
 
+        //Listener para el boton de Modificar
         modificarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Musica.getInstance().playSFX("recursos/clicksfx.wav");
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 String codigoModificar = JOptionPane.showInputDialog(
                     null,
                     "Ingresa la ID del producto a modificar:",
@@ -316,6 +326,7 @@ public class Ventana extends JFrame{
                     return;
                 }
 
+                //Crear un formulario con los datos ya existentes
                 FormularioProducto formulario = new FormularioProducto(Ventana.this, 
                 productoEncontrado.getId(),
                 productoEncontrado.getNombre(),
