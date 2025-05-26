@@ -4,7 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Cajero extends JFrame {
     private JTextField txtCodigoProducto, txtCantidad;
@@ -20,12 +23,22 @@ public class Cajero extends JFrame {
 
     //Valores iniciales para la ventana del cajero
     public Cajero() {
+        //Volver al anterior frame al cerrar la ventana actual
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Inicio inicioFrame = new Inicio();
+                inicioFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+        //Frame
         setTitle("Interfaz Cajero");
         setSize(700, 500);
-        setIconImage(new ImageIcon("iggycafe.png").getImage());
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setIconImage(new ImageIcon("recursos/iggycafe.png").getImage());
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
-        setVisible(true);
 
         inventario = cargarInventario();
         productosVentaActual = new ArrayList<>();
@@ -34,49 +47,140 @@ public class Cajero extends JFrame {
 
         initComponents();
     }
-//Interfaz grafica completa
+
     private void initComponents() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(Color.decode("#735238"));
 
+        //Panel de entrada
         JPanel panelEntrada = new JPanel();
         panelEntrada.setBackground(Color.decode("#735238"));
 
-        panelEntrada.add(new JLabel("Código Producto:"));
+        //Label - [Codigo]
+        JLabel labelID = new JLabel("Código Producto:");
+        labelID.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+        labelID.setForeground(Color.decode("#FFFFFF"));
+        panelEntrada.add(labelID);
+        //TextField - [Codigo]
         txtCodigoProducto = new JTextField(10);
+        txtCodigoProducto.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        txtCodigoProducto.setBackground(Color.decode("#f8e8ce"));
+        txtCodigoProducto.setForeground(Color.decode("#142e3a"));
+        txtCodigoProducto.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelEntrada.add(txtCodigoProducto);
 
-        panelEntrada.add(new JLabel("Cantidad:"));
+        //Label [Cantidad]
+        JLabel labelCant = new JLabel("Cantidad:");
+        labelCant.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+        labelCant.setForeground(Color.decode("#FFFFFF"));
+        panelEntrada.add(labelCant);
+        //TextField [Cantidad]
         txtCantidad = new JTextField(5);
+        txtCantidad.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        txtCantidad.setBackground(Color.decode("#f8e8ce"));
+        txtCantidad.setForeground(Color.decode("#142e3a"));
+        txtCantidad.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelEntrada.add(txtCantidad);
 
+        //Boton de Agregar
         btnAgregar = new JButton("Agregar");
+        btnAgregar.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnAgregar.setBackground(Color.decode("#664c3d"));
+        btnAgregar.setForeground(Color.decode("#FFFFFF"));
+        btnAgregar.setPreferredSize(new Dimension(110, 30));
+        btnAgregar.setBorder(new LineBorder(Color.decode("#f8e8ce"), 1));
+        btnAgregar.setFocusPainted(false);
         panelEntrada.add(btnAgregar);
 
         panel.add(panelEntrada, BorderLayout.NORTH);
 
+        //Tabla
         String[] columnas = {"ID", "Nombre", "Cantidad", "Precio Unitario", "Total"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tablaVentas = new JTable(modeloTabla);
-        panel.add(new JScrollPane(tablaVentas), BorderLayout.CENTER);
+        //Propiedades de la tabla
+        tablaVentas.setRowHeight(30);
+        tablaVentas.setBackground(Color.decode("#e6ccb2"));
+        tablaVentas.setForeground(Color.decode("#142e3a"));
+        tablaVentas.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+        tablaVentas.getTableHeader().setReorderingAllowed(false);
+        tablaVentas.getTableHeader().setBackground(Color.decode("#b08968"));
+        tablaVentas.getTableHeader().setForeground(Color.decode("#FFFFFF"));
+        tablaVentas.getTableHeader().setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+        JScrollPane scroll = new JScrollPane(tablaVentas);
+        scroll.getViewport().setBackground(Color.decode("#8c6d54"));
+        panel.add(scroll, BorderLayout.CENTER);
 
+        //Panel inferior
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelInferior.setBackground(Color.decode("#735238"));
+
+        //Mostrar total
         lblTotal = new JLabel("Total: $0.00");
+        lblTotal.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+        lblTotal.setForeground(Color.decode("#FFFFFF"));
         panelInferior.add(lblTotal);
 
+        //Boton para realizar venta
         btnRealizarVenta = new JButton("Realizar Venta");
+        btnRealizarVenta.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnRealizarVenta.setBackground(Color.decode("#f8e8ce"));
+        btnRealizarVenta.setForeground(Color.decode("#3c2413"));
+        btnRealizarVenta.setPreferredSize(new Dimension(150, 30));
+        btnRealizarVenta.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        btnRealizarVenta.setFocusPainted(false);
         panelInferior.add(btnRealizarVenta);
 
+        //Boton para el corte de caja
         btnCorteCaja = new JButton("Corte de Caja");
+        btnCorteCaja.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnCorteCaja.setBackground(Color.decode("#f8e8ce"));
+        btnCorteCaja.setForeground(Color.decode("#3c2413"));
+        btnCorteCaja.setPreferredSize(new Dimension(150, 30));
+        btnCorteCaja.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        btnCorteCaja.setFocusPainted(false);
         panelInferior.add(btnCorteCaja);
+
+        //Icono de archivo
+        ImageIcon imagenArchivo = new ImageIcon("recursos/file.png");
+        Image imagenArchivoR = imagenArchivo.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        ImageIcon iconoArchivo = new ImageIcon(imagenArchivoR);
+
+        //Boton para abrir archivo
+        JButton btnAbrirArchivo = new JButton("Abrir", iconoArchivo);
+        btnAbrirArchivo.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnAbrirArchivo.setBackground(Color.decode("#f8e8ce"));
+        btnAbrirArchivo.setForeground(Color.decode("#3c2413"));
+        btnAbrirArchivo.setPreferredSize(new Dimension(120, 30));
+        btnAbrirArchivo.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        btnAbrirArchivo.setFocusPainted(false);
+        panelInferior.add(btnAbrirArchivo);
+
+        //Listener abrir archivo
+        btnAbrirArchivo.addActionListener(e -> {
+            Musica.getInstance().playSFX("recursos/clicksfx.wav");
+            File archivo = new File("corte_de_caja.txt");
+            if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo 'corte_de_caja.txt' no existe.");
+                return;
+            }
+
+            try {
+                Desktop.getDesktop().open(archivo);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al abrir el archivo: " + ex.getMessage());
+            }
+        });
 
         panel.add(panelInferior, BorderLayout.SOUTH);
         add(panel);
 
-        btnAgregar.addActionListener(e -> agregarProductoVenta());
-        btnRealizarVenta.addActionListener(e -> realizarVenta());
-        btnCorteCaja.addActionListener(e -> generarCorteCaja());
+        //Listeners
+        btnAgregar.addActionListener(e -> {Musica.getInstance().playSFX("recursos/clicksfx.wav"); agregarProductoVenta();});
+        btnRealizarVenta.addActionListener(e -> {Musica.getInstance().playSFX("recursos/kachingsfx.wav"); realizarVenta();});
+        btnCorteCaja.addActionListener(e -> {Musica.getInstance().playSFX("recursos/printsfx.wav"); generarCorteCaja();});
     }
 
     //Lista para los productos que se utilizaran en el cajero, de estos se tomara la informacion para las ventas

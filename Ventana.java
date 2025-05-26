@@ -8,31 +8,38 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class Ventana{
-    public static void main(String[] args) {
-        //Musica  NOTA: Si la quieres quitar, solo convierte el codigo a comentarios usando "//"
-        Musica musicPlayer = new Musica();
-        musicPlayer.playMusic("iggycafetheme.wav");
+public class Ventana extends JFrame{
+    public Ventana() {
+        //Volver al anterior frame al cerrar la ventana actual
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Inicio inicioFrame = new Inicio();
+                inicioFrame.setVisible(true);
+                dispose();
+            }
+        });
 
         //Logo Iggy
-        ImageIcon imagen = new ImageIcon("iggycafe.png");
+        ImageIcon imagen = new ImageIcon("recursos/iggycafe.png");
         Image imagenR = imagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         ImageIcon logo = new ImageIcon(imagenR);
-        
-        //Frame
-        JFrame frame = new JFrame("Iggy Cafe");
-        frame.setBackground(Color.decode("#735238"));
-        frame.setSize(950, 560);
-        frame.setIconImage(logo.getImage());
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+
+        setTitle("Admin");
+        setBackground(Color.decode("#735238"));
+        setSize(950, 560);
+        setIconImage(logo.getImage());
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLayout(new BorderLayout());
 
         //Panel Norte
         JPanel panelN = new JPanel();
         panelN.setBackground(Color.decode("#735238"));
         panelN.setLayout(new BoxLayout(panelN, BoxLayout.X_AXIS));
-        frame.add(panelN, BorderLayout.NORTH);
+        add(panelN, BorderLayout.NORTH);
 
         //Logotipo label
         JLabel logotipo = new JLabel(logo);
@@ -60,6 +67,7 @@ public class Ventana{
         buscar.setBackground(Color.decode("#3c2413"));
         buscar.setForeground(Color.decode("#FFFFFF"));
         buscar.setPreferredSize(new Dimension(200, 30));
+        buscar.setFocusPainted(false);
         buscar.setBorder(new LineBorder(Color.decode("#000000"), 1));
         
         //Panel para la barra de busqueda y su boton
@@ -79,7 +87,7 @@ public class Ventana{
         JPanel panelC = new JPanel();
         panelC.setBackground(Color.decode("#735238"));
         panelC.setLayout(new BoxLayout(panelC, BoxLayout.Y_AXIS));
-        frame.add(panelC, BorderLayout.CENTER);
+        add(panelC, BorderLayout.CENTER);
 
         //Tabla
         String[] columnas = {"ID", "Nombre", "Descripcion", "Precio", "Medida", "Existencias", "Imagen"};
@@ -115,68 +123,64 @@ public class Ventana{
         //Panel Sur
         JPanel panelS = new JPanel();
         panelS.setBackground(Color.decode("#b08968"));
-        frame.add(panelS, BorderLayout.SOUTH);
+        add(panelS, BorderLayout.SOUTH);
 
-        //Botones
+        //Boton de mostrar
         JButton mostrarBTN = new JButton("Mostrar todo");
         mostrarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         mostrarBTN.setBackground(Color.decode("#f8e8ce"));
         mostrarBTN.setForeground(Color.decode("#3c2413"));
         mostrarBTN.setPreferredSize(new Dimension(150, 30));
         mostrarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        mostrarBTN.setFocusPainted(false);
         panelS.add(mostrarBTN);
 
+        //Boton de agregar
         JButton agregarBTN = new JButton("Agregar");
         agregarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         agregarBTN.setBackground(Color.decode("#f8e8ce"));
         agregarBTN.setForeground(Color.decode("#3c2413"));
         agregarBTN.setPreferredSize(new Dimension(150, 30));
         agregarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        agregarBTN.setFocusPainted(false);
         panelS.add(agregarBTN);
 
+        //Boton de modificar
         JButton modificarBTN = new JButton("Modificar");
         modificarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         modificarBTN.setBackground(Color.decode("#f8e8ce"));
         modificarBTN.setForeground(Color.decode("#3c2413"));
         modificarBTN.setPreferredSize(new Dimension(150, 30));
         modificarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        modificarBTN.setFocusPainted(false);
         panelS.add(modificarBTN);
 
+        //Boton de eliminar
         JButton eliminarBTN = new JButton("Eliminar");
         eliminarBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         eliminarBTN.setBackground(Color.decode("#f8e8ce"));
         eliminarBTN.setForeground(Color.decode("#3c2413"));
         eliminarBTN.setPreferredSize(new Dimension(150, 30));
         eliminarBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
+        eliminarBTN.setFocusPainted(false);
         panelS.add(eliminarBTN);
 
-        JButton cajeroBTN = new JButton("Ventas");
-        cajeroBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        cajeroBTN.setBackground(Color.decode("#f8e8ce"));
-        cajeroBTN.setForeground(Color.decode("#3c2413"));
-        cajeroBTN.setPreferredSize(new Dimension(150, 30));
-        cajeroBTN.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
-        panelS.add(cajeroBTN);
+        ////////////LISTENERS///////////
 
-        //Usar estilo del sistema operativo
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        frame.setVisible(true);
-
+        //Listener para el boton de Agregar
         agregarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                FormularioProducto formulario = new FormularioProducto(frame);
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
+                FormularioProducto formulario = new FormularioProducto(Ventana.this);
                 formulario.setVisible(true);
                 mostrarBTN.doClick();
             }
         });
 
+        //Listener para el boton de Mostrar
         mostrarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 ArrayList<Productos> productos = LectorProductos.leerProductosDesdeArchivo("productos.dat");
                 tableModel.setRowCount(0); // Limpiar tabla
 
@@ -207,8 +211,10 @@ public class Ventana{
         });
 
 
+        //Listener para el boton de Busqueda
         buscar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
                 String busquedaTexto = bbusqueda.getText().trim().toLowerCase();
 
                 tableModel.setRowCount(0); // Limpiar tabla
@@ -242,57 +248,61 @@ public class Ventana{
                 }
 
                 if(tableModel.getRowCount() == 0){
-                    JOptionPane.showMessageDialog(frame, "No se encontraron resultados", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(Ventana.this, "No se encontraron resultados", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                 }
 
             }
         });
 
+        //Listener para el boton de Eliminar
         eliminarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String nombreEliminar = JOptionPane.showInputDialog(
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
+                String codigoEliminar = JOptionPane.showInputDialog(
                     null,
-                    "Ingresa el nombre del producto a eliminar:",
+                    "Ingresa el ID del producto a eliminar:",
                     "Eliminar producto",
                     JOptionPane.QUESTION_MESSAGE
                 );
 
-                if (nombreEliminar == null) {
+                if (codigoEliminar == null) {
                     return;
                 }
 
-                if (nombreEliminar.trim().isEmpty()) {
+                if (codigoEliminar.trim().isEmpty()) {
                     JOptionPane.showMessageDialog(
                         null,
-                        "No se ingresó ningun nombre.",
+                        "No se ingresó ningun ID.",
                         "Advertencia",
                         JOptionPane.WARNING_MESSAGE
                     );
                 } else {
-                    new Catalogo().eliminarProductos(nombreEliminar);
+                    new Catalogo().eliminarProductos(codigoEliminar);
                 }
 
                 mostrarBTN.doClick();
             }
         });
 
+        //Listener para el boton de Modificar
         modificarBTN.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String nombreModificar = JOptionPane.showInputDialog(
+                Musica.getInstance().playSFX("recursos/clicksfx.wav"); //Sonido de click
+                String codigoModificar = JOptionPane.showInputDialog(
                     null,
-                    "Ingresa el nombre del producto a modificar:",
-                    "Eliminar producto",
+                    "Ingresa la ID del producto a modificar:",
+                    "Modificar producto",
                     JOptionPane.QUESTION_MESSAGE
                 );
 
-                if (nombreModificar == null) {
+                if (codigoModificar == null) {
                     return;
                 }
 
-                if (nombreModificar.trim().isEmpty()) {
+                if (codigoModificar.trim().isEmpty()) {
                     JOptionPane.showMessageDialog(
                         null,
-                        "No se ingresó ningun nombre.",
+                        "No se ingresó ningun ID.",
                         "Advertencia",
                         JOptionPane.WARNING_MESSAGE
                     );
@@ -302,21 +312,22 @@ public class Ventana{
                 Productos productoEncontrado = null;
 
                 for (Productos p : productos) {
-                    if (p.getNombre().equalsIgnoreCase(nombreModificar)) {
+                    if (p.getId().equalsIgnoreCase(codigoModificar)) {
                         productoEncontrado = p;
                         break;
                     }
                 }
 
                 if (productoEncontrado == null) {
-                    JOptionPane.showMessageDialog(frame, 
-                    "No se encontró un producto con el nombre: " + nombreModificar, 
+                    JOptionPane.showMessageDialog(Ventana.this, 
+                    "No se encontró un producto con el ID: " + codigoModificar, 
                     "Error", 
                     JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                FormularioProducto formulario = new FormularioProducto(frame, 
+                //Crear un formulario con los datos ya existentes
+                FormularioProducto formulario = new FormularioProducto(Ventana.this, 
                 productoEncontrado.getId(),
                 productoEncontrado.getNombre(),
                 productoEncontrado.getDescripcion(),
@@ -349,10 +360,8 @@ public class Ventana{
             }
         });
 
-        cajeroBTN.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                new Cajero();
-            }
-        });
+        //Refrescar productos automaticamente
+        mostrarBTN.doClick();
+
     }
 }
