@@ -18,6 +18,7 @@ public class Cajero extends JFrame {
     private double totalVenta;
     private int ultimoIdVenta = 0;
 
+    //Valores iniciales para la ventana del cajero
     public Cajero() {
         setTitle("Interfaz Cajero");
         setSize(700, 500);
@@ -33,7 +34,7 @@ public class Cajero extends JFrame {
 
         initComponents();
     }
-
+//Interfaz grafica completa
     private void initComponents() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
 
@@ -78,6 +79,7 @@ public class Cajero extends JFrame {
         btnCorteCaja.addActionListener(e -> generarCorteCaja());
     }
 
+    //Lista para los productos que se utilizaran en el cajero, de estos se tomara la informacion para las ventas
     private List<Productos> cargarInventario() {
         List<Productos> lista = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("productos.dat"))) {
@@ -91,7 +93,7 @@ public class Cajero extends JFrame {
         }
         return lista;
     }
-
+//Al realizar cambios en los productos al vender como eliminacion de unidades se realiza un guardar inventario
     private void guardarInventario() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("productos.dat"))) {
             for (Productos p : inventario) oos.writeObject(p);
@@ -99,14 +101,14 @@ public class Cajero extends JFrame {
             JOptionPane.showMessageDialog(this, "Error guardando inventario: " + e.getMessage());
         }
     }
-
+    //Funcion para buscar un producto en el inventario por medio de su id
     private Productos buscarProducto(String codigo) {
         return inventario.stream()
             .filter(p -> p.getId().equalsIgnoreCase(codigo))
             .findFirst()
             .orElse(null);
     }
-
+    //Metodo para agregar productos a la venta, funciona agregando nombre cantidad del producto
     private void agregarProductoVenta() {
         String codigo = txtCodigoProducto.getText().trim();
         int cantidad;
@@ -146,7 +148,7 @@ public class Cajero extends JFrame {
         txtCodigoProducto.setText("");
         txtCantidad.setText("");
     }
-
+//Metodo para realizar venta guardando la informacion de la venta en el archivo de ventas.dat para que al realizar el corte de caja se tome la informacion de ahi
     private void realizarVenta() {
         if (productosVentaActual.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No hay productos en la venta.");
@@ -171,7 +173,7 @@ public class Cajero extends JFrame {
         totalVenta = 0;
         lblTotal.setText("Total: $0.00");
     }
-
+//Aqui se guardan las ventas hechas anteriormente en ventas.dat
     private void guardarVentas(List<Venta> nuevas) {
         List<Venta> todas = new ArrayList<>();
         File archivo = new File("ventas.dat");
@@ -199,7 +201,7 @@ public class Cajero extends JFrame {
             e.printStackTrace();
         }
     }
-
+//Funcion para buscar la ultima venta para imprimir debajo de ella la informacion del corte de caja
     private int obtenerUltimoIdVenta() {
         int maxId = 0;
         File archivo = new File("ventas.dat");
@@ -226,7 +228,7 @@ public class Cajero extends JFrame {
         }
         return maxId;
     }
-
+//Funcion para realizar el corte de caja de las ventas realizadas en ventas.dat
     private void generarCorteCaja() {
         File archivo = new File("ventas.dat");
         if (!archivo.exists()) {

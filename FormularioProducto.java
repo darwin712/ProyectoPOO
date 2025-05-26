@@ -14,6 +14,7 @@ public class FormularioProducto extends JDialog {
     private String rutaImagenSeleccionada = null;
     private Productos productoCreado = null;
 
+    //Interfaz grafica del formulario
     public FormularioProducto(JFrame parent) {
         super(parent, "Agregar Producto", true);
         setLayout(new GridLayout(10, 2));
@@ -70,14 +71,16 @@ public class FormularioProducto extends JDialog {
         aceptar.addActionListener(e -> {
             confirmado = true;
 
+            //Se guarda la informacion que se ingreso en la tabla
             String id = idField.getText();
             String nombre = nombreField.getText();
             String descripcion = descripcionField.getText();
             String precio = precioField.getText();
-            String medidas = medidasField.getText();  // Reutilizamos este campo para ambos tipos
+            String medidas = medidasField.getText();  
             String existencias = existenciasField.getText();
             String rutaImagen = rutaImagenSeleccionada;
 
+           //Se pregunta si el producto registrado es bebida o alimento
             if (bebidaButton.isSelected()) {
                 productoCreado = new Bebidas(id, nombre, descripcion, rutaImagen, precio, medidas, existencias);
                 System.out.println("Bebida creada: " + productoCreado);
