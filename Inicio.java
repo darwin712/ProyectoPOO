@@ -39,14 +39,20 @@ public class Inicio extends JFrame{
             Musica.getInstance().setWasPlayedOnce(true);
         }
 
+        //Actualizar boton de on/off
+        if (Musica.getInstance().isPlaying()) {
+            musicBTN.setText("ON");
+        } else {
+            musicBTN.setText("OFF");
+        }
+
         //Listener para alternar musica
         musicBTN.addActionListener(e -> {
-            Musica musica = Musica.getInstance();
-            if (musica.isPlaying()) {
-                musica.stopMusic();
+            if (Musica.getInstance().isPlaying()) {
+                Musica.getInstance().stopMusic();
                 musicBTN.setText("OFF");
             } else {
-                musica.playMusic("recursos/iggycafetheme.wav");
+                Musica.getInstance().playMusic("recursos/iggycafetheme.wav");
                 musicBTN.setText("ON");
             }
         });
