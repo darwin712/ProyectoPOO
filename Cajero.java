@@ -18,7 +18,6 @@ public class Cajero extends JFrame {
     private JLabel lblTotal;
     private JButton btnEliminar;
 
-    
     private JTable tablaInventario;
     private DefaultTableModel modeloInventario;
 
@@ -27,9 +26,7 @@ public class Cajero extends JFrame {
     private double totalVenta;
     private int ultimoIdVenta = 0;
 
-    //Valores iniciales para la ventana del cajero
     public Cajero() {
-        //Volver al anterior frame al cerrar la ventana actual
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -39,11 +36,9 @@ public class Cajero extends JFrame {
             }
         });
 
-        //Frame
         setTitle("Interfaz Cajero");
-        // MODIFICADO: Se aumenta el ancho para dar espacio a la nueva tabla
         setSize(1100, 600);
-        // setIconImage(new ImageIcon("recursos/iggycafe.png").getImage());
+        setIconImage(new ImageIcon("recursos/iggycafe.png").getImage());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -53,25 +48,20 @@ public class Cajero extends JFrame {
         ultimoIdVenta = obtenerUltimoIdVenta();
 
         initComponents();
-        // MODIFICADO: Llenar la tabla de inventario al iniciar
         actualizarTablaInventario();
     }
 
     private void initComponents() {
-        // MODIFICADO: El panel principal (panelVentas) ahora contendrá toda la parte derecha de la UI
         JPanel panelVentas = new JPanel(new BorderLayout(10, 10));
         panelVentas.setBackground(Color.decode("#735238"));
 
-        //Panel de entrada
         JPanel panelEntrada = new JPanel();
         panelEntrada.setBackground(Color.decode("#735238"));
 
-        //Label - [Codigo]
         JLabel labelID = new JLabel("Código Producto:");
         labelID.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
         labelID.setForeground(Color.decode("#FFFFFF"));
         panelEntrada.add(labelID);
-        //TextField - [Codigo]
         txtCodigoProducto = new JTextField(10);
         txtCodigoProducto.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         txtCodigoProducto.setBackground(Color.decode("#f8e8ce"));
@@ -79,12 +69,10 @@ public class Cajero extends JFrame {
         txtCodigoProducto.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelEntrada.add(txtCodigoProducto);
 
-        //Label [Cantidad]
         JLabel labelCant = new JLabel("Cantidad:");
         labelCant.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
         labelCant.setForeground(Color.decode("#FFFFFF"));
         panelEntrada.add(labelCant);
-        //TextField [Cantidad]
         txtCantidad = new JTextField(5);
         txtCantidad.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         txtCantidad.setBackground(Color.decode("#f8e8ce"));
@@ -92,7 +80,6 @@ public class Cajero extends JFrame {
         txtCantidad.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         panelEntrada.add(txtCantidad);
 
-        //Boton de Agregar
         btnAgregar = new JButton("Agregar");
         btnAgregar.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         btnAgregar.setBackground(Color.decode("#664c3d"));
@@ -104,7 +91,6 @@ public class Cajero extends JFrame {
 
         panelVentas.add(panelEntrada, BorderLayout.NORTH);
 
-        // Botón Eliminar
         btnEliminar = new JButton("Eliminar");
         btnEliminar.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         btnEliminar.setBackground(Color.decode("#a35b5b"));
@@ -115,17 +101,15 @@ public class Cajero extends JFrame {
         panelEntrada.add(btnEliminar);
 
         btnEliminar.addActionListener(e -> {
-            // Musica.getInstance().playSFX("recursos/clicksfx.wav");
+            Musica.getInstance().playSFX("recursos/clicksfx.wav");
             eliminarProductoSeleccionado();
         });
 
-        //Tabla de ventas
         String[] columnas = {"ID", "Nombre", "Cantidad", "Precio Unitario", "Total"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tablaVentas = new JTable(modeloTabla);
-        //Propiedades de la tabla
         tablaVentas.setRowHeight(30);
         tablaVentas.setBackground(Color.decode("#e6ccb2"));
         tablaVentas.setForeground(Color.decode("#142e3a"));
@@ -138,17 +122,14 @@ public class Cajero extends JFrame {
         scroll.getViewport().setBackground(Color.decode("#8c6d54"));
         panelVentas.add(scroll, BorderLayout.CENTER);
 
-        //Panel inferior
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelInferior.setBackground(Color.decode("#735238"));
 
-        //Mostrar total
         lblTotal = new JLabel("Total: $0.00");
         lblTotal.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
         lblTotal.setForeground(Color.decode("#FFFFFF"));
         panelInferior.add(lblTotal);
 
-        //Boton para realizar venta
         btnRealizarVenta = new JButton("Realizar Venta");
         btnRealizarVenta.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         btnRealizarVenta.setBackground(Color.decode("#f8e8ce"));
@@ -158,7 +139,6 @@ public class Cajero extends JFrame {
         btnRealizarVenta.setFocusPainted(false);
         panelInferior.add(btnRealizarVenta);
 
-        //Boton para el corte de caja
         btnCorteCaja = new JButton("Corte de Caja");
         btnCorteCaja.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         btnCorteCaja.setBackground(Color.decode("#f8e8ce"));
@@ -168,10 +148,7 @@ public class Cajero extends JFrame {
         btnCorteCaja.setFocusPainted(false);
         panelInferior.add(btnCorteCaja);
 
-        
-
-        //Boton para abrir archivo
-        JButton btnAbrirArchivo = new JButton("Abrir"); //, iconoArchivo);
+        JButton btnAbrirArchivo = new JButton("Abrir");
         btnAbrirArchivo.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         btnAbrirArchivo.setBackground(Color.decode("#f8e8ce"));
         btnAbrirArchivo.setForeground(Color.decode("#3c2413"));
@@ -180,9 +157,8 @@ public class Cajero extends JFrame {
         btnAbrirArchivo.setFocusPainted(false);
         panelInferior.add(btnAbrirArchivo);
 
-        //Listener abrir archivo
         btnAbrirArchivo.addActionListener(e -> {
-            // Musica.getInstance().playSFX("recursos/clicksfx.wav");
+            Musica.getInstance().playSFX("recursos/clicksfx.wav");
             File archivo = new File("corte_de_caja.txt");
             if (!archivo.exists()) {
                 JOptionPane.showMessageDialog(this, "El archivo 'corte_de_caja.txt' no existe.");
@@ -197,15 +173,14 @@ public class Cajero extends JFrame {
 
         panelVentas.add(panelInferior, BorderLayout.SOUTH);
 
-        // MODIFICADO: Creación del panel izquierdo para el inventario
         JPanel panelIzquierdo = new JPanel(new BorderLayout());
         panelIzquierdo.setBorder(BorderFactory.createTitledBorder(
-            new LineBorder(Color.decode("#f8e8ce"), 1),
-            "Inventario Disponible",
-            TitledBorder.CENTER,
-            TitledBorder.TOP,
-            new Font("Comic Sans MS", Font.BOLD, 18),
-            Color.WHITE));
+                new LineBorder(Color.decode("#f8e8ce"), 1),
+                "Inventario Disponible",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                new Font("Comic Sans MS", Font.BOLD, 18),
+                Color.WHITE));
         panelIzquierdo.setBackground(Color.decode("#735238"));
 
         String[] columnasInventario = {"ID", "Nombre", "Existencias", "Precio"};
@@ -229,37 +204,23 @@ public class Cajero extends JFrame {
         scrollInventario.getViewport().setBackground(Color.decode("#8c6d54"));
         panelIzquierdo.add(scrollInventario, BorderLayout.CENTER);
 
-
-        // MODIFICADO: Creación y configuración del JSplitPane
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdo, panelVentas);
-        splitPane.setDividerLocation(350); // Posición inicial del divisor
+        splitPane.setDividerLocation(350);
         splitPane.setOneTouchExpandable(true);
-        splitPane.setResizeWeight(0.3); // Proporción de espacio al cambiar tamaño
+        splitPane.setResizeWeight(0.3);
         
-        // MODIFICADO: Añadir el splitPane al frame en lugar del panel original
         add(splitPane);
 
-
-        //Listeners
-        // btnAgregar.addActionListener(e -> {Musica.getInstance().playSFX("recursos/clicksfx.wav"); agregarProductoVenta();});
-        // btnRealizarVenta.addActionListener(e -> {Musica.getInstance().playSFX("recursos/kachingsfx.wav"); realizarVenta();});
-        // btnCorteCaja.addActionListener(e -> {Musica.getInstance().playSFX("recursos/printsfx.wav"); generarCorteCaja();});
-        
-        // Listeners sin la clase Musica para que sea compilable
-        btnAgregar.addActionListener(e -> agregarProductoVenta());
-        btnRealizarVenta.addActionListener(e -> realizarVenta());
-        btnCorteCaja.addActionListener(e -> generarCorteCaja());
+        btnAgregar.addActionListener(e -> {Musica.getInstance().playSFX("recursos/clicksfx.wav"); agregarProductoVenta();});
+        btnRealizarVenta.addActionListener(e -> {Musica.getInstance().playSFX("recursos/kachingsfx.wav"); realizarVenta();});
+        btnCorteCaja.addActionListener(e -> {Musica.getInstance().playSFX("recursos/printsfx.wav"); generarCorteCaja();});
     }
 
-    // MODIFICADO: Nuevo método para cargar/actualizar los datos en la tabla de inventario
     private void actualizarTablaInventario() {
-        // Limpiar la tabla actual
         modeloInventario.setRowCount(0);
         
-        // Ordenar el inventario por nombre para una mejor visualización
         inventario.sort(Comparator.comparing(Productos::getNombre));
 
-        // Llenar la tabla con los datos del inventario
         for (Productos p : inventario) {
             modeloInventario.addRow(new Object[]{
                     p.getId(),
@@ -269,7 +230,6 @@ public class Cajero extends JFrame {
             });
         }
     }
-
 
     private List<Productos> cargarInventario() {
         List<Productos> lista = new ArrayList<>();
@@ -364,7 +324,7 @@ public class Cajero extends JFrame {
         totalVenta = 0;
         lblTotal.setText("Total: $0.00");
 
-       
+        
         actualizarTablaInventario();
     }
 
@@ -453,11 +413,11 @@ public class Cajero extends JFrame {
             for (Venta v : todas) {
                 writer.printf("Venta ID: %s | Fecha: %s\n", v.getIdVenta(), v.getFecha());
                 for (ProductoVendido p : v.getProductos()) {
-                    writer.printf("  %s - %s - x%d - $%.2f - $%.2f\n",
+                    writer.printf("   %s - %s - x%d - $%.2f - $%.2f\n",
                         p.getIdProducto(), p.getNombreProducto(),
                         p.getCantidad(), p.getPrecioUnitario(), p.getTotal());
                 }
-                writer.printf("  TOTAL VENTA: $%.2f\n\n", v.getTotalVenta());
+                writer.printf("   TOTAL VENTA: $%.2f\n\n", v.getTotalVenta());
                 totalDia += v.getTotalVenta();
             }
 
@@ -494,6 +454,4 @@ public class Cajero extends JFrame {
             JOptionPane.showMessageDialog(this, "Selecciona un producto para eliminar.");
         }
     }
-    
-    
 }
