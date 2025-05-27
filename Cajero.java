@@ -33,9 +33,8 @@ public class Cajero extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Suponiendo que tienes una clase Inicio
-                // Inicio inicioFrame = new Inicio();
-                // inicioFrame.setVisible(true);
+                Inicio inicioFrame = new Inicio();
+                inicioFrame.setVisible(true);
                 dispose();
             }
         });
