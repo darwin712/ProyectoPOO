@@ -15,6 +15,8 @@ public class Cajero extends JFrame {
     private JTable tablaVentas;
     private DefaultTableModel modeloTabla;
     private JLabel lblTotal;
+    private JButton btnEliminar;
+
 
     private List<Productos> inventario;
     private List<ProductoVendido> productosVentaActual;
@@ -94,6 +96,23 @@ public class Cajero extends JFrame {
 
         panel.add(panelEntrada, BorderLayout.NORTH);
 
+        // Botón Eliminar
+        btnEliminar = new JButton("Eliminar");
+        btnEliminar.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnEliminar.setBackground(Color.decode("#a35b5b"));
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setPreferredSize(new Dimension(110, 30));
+        btnEliminar.setBorder(new LineBorder(Color.decode("#f8e8ce"), 1));
+        btnEliminar.setFocusPainted(false);
+        panelEntrada.add(btnEliminar);
+
+        btnEliminar.addActionListener(e -> {
+        Musica.getInstance().playSFX("recursos/clicksfx.wav");
+        eliminarProductoSeleccionado();
+});
+
+
+
         //Tabla
         String[] columnas = {"ID", "Nombre", "Cantidad", "Precio Unitario", "Total"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
@@ -142,6 +161,8 @@ public class Cajero extends JFrame {
         btnCorteCaja.setBorder(new LineBorder(Color.decode("#3d2111"), 1));
         btnCorteCaja.setFocusPainted(false);
         panelInferior.add(btnCorteCaja);
+
+        
 
         //Icono de archivo
         ImageIcon imagenArchivo = new ImageIcon("recursos/file.png");
@@ -379,4 +400,30 @@ public class Cajero extends JFrame {
 
         JOptionPane.showMessageDialog(this, "Corte de caja generado: corte_de_caja.txt");
     }
+private void eliminarProductoSeleccionado() {
+    int filaSeleccionada = tablaVentas.getSelectedRow();
+    if (filaSeleccionada >= 0) {
+        String id = modeloTabla.getValueAt(filaSeleccionada, 0).toString();
+        int cantidad = Integer.parseInt(modeloTabla.getValueAt(filaSeleccionada, 2).toString());
+
+        ProductoVendido encontrado = null;
+        for (ProductoVendido pv : productosVentaActual) {
+            if (pv.getIdProducto().equals(id) && pv.getCantidad() == cantidad) {
+                encontrado = pv;
+                break;
+            }
+        }
+
+        if (encontrado != null) {
+            productosVentaActual.remove(encontrado);
+            totalVenta -= encontrado.getTotal();
+            lblTotal.setText(String.format("Total: $%.2f", totalVenta));
+            modeloTabla.removeRow(filaSeleccionada);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona un producto para eliminar.");
+    }
+}
+
+
 }
