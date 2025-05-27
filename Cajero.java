@@ -18,7 +18,7 @@ public class Cajero extends JFrame {
     private JLabel lblTotal;
     private JButton btnEliminar;
 
-    // MODIFICADO: Nuevos componentes para la tabla de inventario
+    
     private JTable tablaInventario;
     private DefaultTableModel modeloInventario;
 
@@ -169,10 +169,7 @@ public class Cajero extends JFrame {
         btnCorteCaja.setFocusPainted(false);
         panelInferior.add(btnCorteCaja);
 
-        //Icono de archivo
-        // ImageIcon imagenArchivo = new ImageIcon("recursos/file.png");
-        // Image imagenArchivoR = imagenArchivo.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        // ImageIcon iconoArchivo = new ImageIcon(imagenArchivoR);
+        
 
         //Boton para abrir archivo
         JButton btnAbrirArchivo = new JButton("Abrir"); //, iconoArchivo);
@@ -368,7 +365,7 @@ public class Cajero extends JFrame {
         totalVenta = 0;
         lblTotal.setText("Total: $0.00");
 
-        // MODIFICADO: Actualizar la tabla de inventario después de la venta
+       
         actualizarTablaInventario();
     }
 
@@ -499,6 +496,5 @@ public class Cajero extends JFrame {
         }
     }
     
-    // NOTA: Para que este código compile, necesitarás las clases Productos, ProductoVendido y Venta.
-    // Asumo que ya las tienes. También he comentado las líneas que usan la clase Musica.
+    
 }
