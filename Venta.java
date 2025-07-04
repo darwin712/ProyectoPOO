@@ -1,34 +1,23 @@
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 
 public class Venta implements Serializable {
-    private String idProducto;
-    private String nombreProducto;
-    private int cantidadVendida;
-    private double precioUnitario;
-    private double total;
-    private String fechaHora;
+    private String idVenta;
+    private Date fecha;
+    private List<ProductoVendido> productos;
 
-    public Venta(String idProducto, String nombreProducto, int cantidadVendida, double precioUnitario) {
-        this.idProducto = idProducto;
-        this.nombreProducto = nombreProducto;
-        this.cantidadVendida = cantidadVendida;
-        this.precioUnitario = precioUnitario;
-        this.total = cantidadVendida * precioUnitario;
-        this.fechaHora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public Venta(String idVenta, Date fecha, List<ProductoVendido> productos) {
+        this.idVenta = idVenta;
+        this.fecha = fecha;
+        this.productos = productos;
     }
 
-    // Getters
-    public String getIdProducto() { return idProducto; }
-    public String getNombreProducto() { return nombreProducto; }
-    public int getCantidadVendida() { return cantidadVendida; }
-    public double getPrecioUnitario() { return precioUnitario; }
-    public double getTotal() { return total; }
-    public String getFechaHora() { return fechaHora; }
+    public String getIdVenta() { return idVenta; }
+    public Date getFecha() { return fecha; }
+    public List<ProductoVendido> getProductos() { return productos; }
 
-    @Override
-    public String toString() {
-        return fechaHora + " | ID: " + idProducto + " | " + nombreProducto +" x" + cantidadVendida + " @ $" + precioUnitario +" = $" + total;
+    public double getTotalVenta() {
+        return productos.stream().mapToDouble(ProductoVendido::getTotal).sum();
     }
 }
